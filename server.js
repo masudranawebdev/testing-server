@@ -1,0 +1,20 @@
+const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
+
+
+const uri = `mongodb+srv://${process.env.BD_USER}:${process.env.DB_PASSWORD}@cluster0.1pmqj8u.mongodb.net/ecommerce?retryWrites=true&w=majority`;
+
+
+function connectDB() {
+  mongoose.set("strictQuery", false);
+  mongoose
+    .connect(uri)
+    .then(() => {
+        console.log(`Database connection Successfully`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+module.exports = connectDB;
