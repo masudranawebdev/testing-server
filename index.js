@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Ecommerce App is working! YaY!");
+  res.send("Ecommerce App is working! YaY !");
 });
 
 // Import All Api
