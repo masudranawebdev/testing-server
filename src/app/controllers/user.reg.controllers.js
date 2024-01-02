@@ -4,7 +4,7 @@ const ApiError = require("../../errors/ApiError");
 const sendResponse = require("../../shared/send.response");
 const httpStatus = require("http-status");
 const { checkAUserExits, postRegUserServices } = require("../services/user.reg.services");
-const saltRounds = 10
+const saltRounds = 10;
 
 // registration a user
 exports.postRegUser = async (req, res, next) => {

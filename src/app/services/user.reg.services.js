@@ -9,5 +9,6 @@ exports.checkAUserExits = async (email) => {
 // Registration A User
 exports.postRegUserServices = async (data) => {
     const createUser = await UserModel.create(data);
-    return createUser;
-}
+    const userWithoutPassword = await UserModel.findById(createUser._id).select("-password");
+    return userWithoutPassword;
+};
