@@ -7,6 +7,8 @@ const Sub_CategoryRoutes = require('../app/routes/sub.category.routes');
 const CollectionRoutes = require('../app/routes/collection.routes');
 const StyleRoutes = require('../app/routes/style.routes');
 const FeatureRoutes = require('../app/routes/feature.routes');
+const UserLoginRoutes = require('../app/routes/user.login.routes');
+const GetMeRoutes = require('../app/routes/get.me.routes');
 
 const router = express.Router();
 
@@ -14,6 +16,14 @@ const moduleRoutes = [
   {
     path: '/userReg',
     route: UserRegRoutes.router,
+  },
+  {
+    path: '/userlogin',
+    route: UserLoginRoutes.router,
+  },
+  {
+    path: '/getMe',
+    route: GetMeRoutes.router,
   },
   {
     path: '/color',

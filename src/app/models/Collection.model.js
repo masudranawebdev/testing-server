@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Collection Schema and connect DB collection
 const collectionSchema = new mongoose.Schema({
-    collection: {
+    collection_name: {
         type: String,
         required: true,
     },
