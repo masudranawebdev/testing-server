@@ -1,8 +1,8 @@
 const CollectionModel = require("../models/Collection.model");
 
 // Find A Collection is Exist ?
-exports.checkACollectionExits = async (collection) => {
-    const FindCollection = await CollectionModel.findOne({ collection: collection });
+exports.checkACollectionExits = async (collection_name) => {
+    const FindCollection = await CollectionModel.findOne({ collection_name: collection_name });
     return FindCollection;
 }
 

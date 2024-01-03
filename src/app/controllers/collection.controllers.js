@@ -25,7 +25,7 @@ exports.getAllCollection = async (req, res, next) => {
 exports.postCollection = async (req, res, next) => {
     try {
         const data = req.body;
-        const exist = await checkACollectionExits(data?.collection);
+        const exist = await checkACollectionExits(data?.collection_name);
         if(exist){
             throw new ApiError(400, 'Previously Added !')
         }

@@ -32,6 +32,10 @@ const usersRegSchema = new mongoose.Schema({
     },
     address: {
         type: String
+    },
+    verify: {
+        type: Boolean,
+        default: false
     }
 },
 {
