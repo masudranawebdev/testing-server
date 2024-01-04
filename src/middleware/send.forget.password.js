@@ -11,7 +11,7 @@ const SendForgetPasswordLink = async (email) => {
                 pass: process.env.pass,
             },
         });
-        const resetLink = 'http://localhost:5000/reset-password'
+        const resetLink = 'http://localhost:3000/reset-password'
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: 'No reply <classicIt@gmail.com>', // sender address

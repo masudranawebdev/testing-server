@@ -18,14 +18,6 @@ exports.postMenuServices = async (data) => {
     return createMenu;
 }
 
-// Update a Menu
-exports.updateMenuServices = async(data) =>{
-    const updateMenuInfo = await MenuModel.findOne({_id: data?._id})
-    const Menu = await MenuModel.updateOne(updateMenuInfo, data, {
-    runValidators: true });
-    return Menu;
-}
-
 // Delete a Menu
 exports.deleteMenuServices = async (id) => {
     const Menu = await MenuModel.deleteOne({ _id: id }, {
