@@ -8,7 +8,7 @@ const SendOTP = async (otp, email) => {
             secure: true,
             auth: {
                 user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD,
+                pass: process.env.pass,
             },
         });
 
@@ -21,8 +21,10 @@ const SendOTP = async (otp, email) => {
                 <h5>Your OTP IS ${otp}</h5>
             `, // html body
         });
+        console.log(info)
         return info;
     } catch (error) {
+        console.log(error)
         return error;
     }
 };
