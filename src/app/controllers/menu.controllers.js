@@ -44,26 +44,6 @@ exports.postMenu = async (req, res, next) => {
     }
 }
 
-// Update Menu item information
-exports.updateMenuInfo = async (req, res) => {
-    try {
-        const data = req.body;
-        const result= await updateMenuServices(data);
-        if (result?.modifiedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Menu update successfully !'
-            });
-        }else{
-            throw new ApiError(400, 'Menu update failed !')
-        }
-
-    } catch (error) {
-        next(error);
-    }
-}
-
 // delete A Menu item
 exports.deleteAMenuInfo = async (req, res, next) => {
     try {

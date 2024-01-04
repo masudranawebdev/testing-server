@@ -3,7 +3,7 @@ const { getAllMenu, postMenu, updateMenuInfo, deleteAMenuInfo } = require("../co
 const router = express.Router();
 
 // get post delete and update Menu Item
-router.route('/').get(getAllMenu).post(postMenu).patch(updateMenuInfo).delete(deleteAMenuInfo)
+router.route('/').get(getAllMenu).post(postMenu).delete(deleteAMenuInfo)
 
 const MenuRoutes = {
     router
