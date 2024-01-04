@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 // Import All Api
-app.use('/api/v1', routes);
+app.use('/api/v1', routes); 
 
 
 //global error handler
