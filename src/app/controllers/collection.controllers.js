@@ -44,26 +44,6 @@ exports.postCollection = async (req, res, next) => {
     }
 }
 
-// Update Collection item information
-exports.updateCollectionInfo = async (req, res, next) => {
-    try {
-        const data = req.body;
-        const result= await updateCollectionServices(data);
-        if (result?.modifiedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Collection update successfully !'
-            });
-        }else{
-            throw new ApiError(400, 'Collection update failed !')
-        }
-
-    } catch (error) {
-        next(error);
-    }
-}
-
 // delete A Collection item
 exports.deleteACollectionInfo = async (req, res, next) => {
     try {

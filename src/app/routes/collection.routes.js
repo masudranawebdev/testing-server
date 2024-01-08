@@ -3,7 +3,7 @@ const { getAllCollection, postCollection, updateCollectionInfo, deleteACollectio
 const router = express.Router();
 
 // get post delete and update Collection Item
-router.route('/').get(getAllCollection).post(postCollection).patch(updateCollectionInfo).delete(deleteACollectionInfo)
+router.route('/').get(getAllCollection).post(postCollection).delete(deleteACollectionInfo)
 
 const CollectionRoutes = {
     router

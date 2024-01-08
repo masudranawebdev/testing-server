@@ -1,3 +1,4 @@
+const StyleModel = require("../models/Style.model");
 
 // Find A Style is Exist ?
 exports.checkAStyleExits = async (style) => {
@@ -15,14 +16,6 @@ exports.getAllStyleService = async () => {
 exports.postStyleServices = async (data) => {
     const createStyle = await StyleModel.create(data);
     return createStyle;
-}
-
-// Update a Style
-exports.updateStyleServices = async(data) =>{
-    const updateStyleInfo = await StyleModel.findOne({_id: data?._id})
-    const Style = await StyleModel.updateOne(updateStyleInfo, data, {
-    runValidators: true });
-    return Style;
 }
 
 // Delete a Style

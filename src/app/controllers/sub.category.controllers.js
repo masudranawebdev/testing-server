@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices } = require("../services/sub.category.services");
+const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices, checkASubCategoryExitsInCategoryWhenUpdate, checkASubCategoryExitsInProducts } = require("../services/sub.category.services");
 
 // get all Sub_Category
 exports.getAllSub_Category = async (req, res, next) => {
@@ -48,6 +48,10 @@ exports.postSub_Category = async (req, res, next) => {
 exports.updateSub_CategoryInfo = async (req, res, next) => {
     try {
         const data = req.body;
+        const checkExist = await checkASubCategoryExitsInCategoryWhenUpdate(data?.sub_category);
+        if(checkExist){
+            throw new ApiError(400, 'Previously Added !')
+        }
         const result= await updateSub_CategoryServices(data);
         if (result?.modifiedCount > 0) {
             sendResponse(res, {
@@ -68,6 +72,10 @@ exports.updateSub_CategoryInfo = async (req, res, next) => {
 exports.deleteASub_CategoryInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const existProduct = await checkASubCategoryExitsInProducts(id);
+        if(existProduct?.length > 0){
+            throw new ApiError(400, 'This menu is exist in products !');
+        }
         const result = await deleteSub_CategoryServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {

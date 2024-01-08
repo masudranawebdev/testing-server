@@ -3,7 +3,7 @@ const { getAllFeature, postFeature, updateFeatureInfo, deleteAFeatureInfo } = re
 const router = express.Router();
 
 // get post delete and update Feature Item
-router.route('/').get(getAllFeature).post(postFeature).patch(updateFeatureInfo).delete(deleteAFeatureInfo)
+router.route('/').get(getAllFeature).post(postFeature).delete(deleteAFeatureInfo)
 
 const FeatureRoutes = {
     router

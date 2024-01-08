@@ -6,6 +6,10 @@ const collectionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    slug: {
+        type: String,
+        required: true
+    }
 },
 {
     timestamps: true

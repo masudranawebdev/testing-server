@@ -44,26 +44,6 @@ exports.postStyle = async (req, res, next) => {
     }
 }
 
-// Update Style item information
-exports.updateStyleInfo = async (req, res, next) => {
-    try {
-        const data = req.body;
-        const result= await updateStyleServices(data);
-        if (result?.modifiedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Style update successfully !'
-            });
-        }else{
-            throw new ApiError(400, 'Style update failed !')
-        }
-
-    } catch (error) {
-        next(error);
-    }
-}
-
 // delete A Style item
 exports.deleteAStyleInfo = async (req, res, next) => {
     try {

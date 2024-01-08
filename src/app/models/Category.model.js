@@ -10,6 +10,10 @@ const categorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'menus',
     },
+    slug: {
+        type: String,
+        required: true
+    }
 },
 {
     timestamps: true

@@ -3,7 +3,7 @@ const { getAllStyle, postStyle, updateStyleInfo, deleteAStyleInfo } = require(".
 const router = express.Router();
 
 // get post delete and update Style Item
-router.route('/').get(getAllStyle).post(postStyle).patch(updateStyleInfo).delete(deleteAStyleInfo)
+router.route('/').get(getAllStyle).post(postStyle).delete(deleteAStyleInfo)
 
 const StyleRoutes = {
     router

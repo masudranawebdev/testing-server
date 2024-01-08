@@ -18,14 +18,6 @@ exports.postFeatureServices = async (data) => {
     return createFeature;
 }
 
-// Update a Feature
-exports.updateFeatureServices = async(data) =>{
-    const updateFeatureInfo = await FeatureModel.findOne({_id: data?._id})
-    const Feature = await FeatureModel.updateOne(updateFeatureInfo, data, {
-    runValidators: true });
-    return Feature;
-}
-
 // Delete a Feature
 exports.deleteFeatureServices = async (id) => {
     const Feature = await FeatureModel.deleteOne({ _id: id }, {

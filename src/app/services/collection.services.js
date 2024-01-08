@@ -18,14 +18,6 @@ exports.postCollectionServices = async (data) => {
     return createCollection;
 }
 
-// Update a Collection
-exports.updateCollectionServices = async(data) =>{
-    const updateCollectionInfo = await CollectionModel.findOne({_id: data?._id})
-    const Collection = await CollectionModel.updateOne(updateCollectionInfo, data, {
-    runValidators: true });
-    return Collection;
-}
-
 // Delete a Collection
 exports.deleteCollectionServices = async (id) => {
     const Collection = await CollectionModel.deleteOne({ _id: id }, {

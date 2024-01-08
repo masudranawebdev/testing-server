@@ -19,14 +19,6 @@ exports.postColorServices = async (data) => {
     return createColor;
 }
 
-// Update a color
-exports.updateColorServices = async(data) =>{
-    const updateColorInfo = await ColorModel.findOne({_id: data?._id})
-    const color = await ColorModel.updateOne(updateColorInfo, data, {
-    runValidators: true });
-    return color;
-}
-
 // Delete a color
 exports.deleteColorServices = async (id) => {
     const color = await ColorModel.deleteOne({ _id: id }, {
