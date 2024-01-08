@@ -14,6 +14,10 @@ const sub_categorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'categories',
     },
+    slug: {
+        type: String,
+        required: true
+    }
 },
 {
     timestamps: true

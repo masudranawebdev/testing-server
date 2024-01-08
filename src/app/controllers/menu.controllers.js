@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { getAllMenuService, postMenuServices, updateMenuServices, deleteMenuServices, checkAMenuExits } = require("../services/menu.services");
+const { getAllMenuService, postMenuServices, updateMenuServices, deleteMenuServices, checkAMenuExits, checkAMenuExitsInCategory, checkAMenuExitsInSubCategory, checkAMenuExitsInMenu, checkAMenuExitsInProducts } = require("../services/menu.services");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 
@@ -48,6 +48,18 @@ exports.postMenu = async (req, res, next) => {
 exports.deleteAMenuInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const existCategory = await checkAMenuExitsInCategory(id);
+        if(existCategory?.length > 0){
+            throw new ApiError(400, 'This menu is exist in category !');
+        }
+        const existSubCategory = await checkAMenuExitsInSubCategory(id);
+        if(existSubCategory?.length > 0){
+            throw new ApiError(400, 'This menu is exist in sub category !');
+        }
+        const existProduct = await checkAMenuExitsInProducts(id);
+        if(existProduct?.length > 0){
+            throw new ApiError(400, 'This menu is exist in products !');
+        }
         const result = await deleteMenuServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {
@@ -57,6 +69,29 @@ exports.deleteAMenuInfo = async (req, res, next) => {
             });
         } else {
             throw new ApiError(400, 'Menu delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update A Menu item
+exports.updateAMenuInfo = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const checkExist = await checkAMenuExitsInMenu(data?.menu);
+        if(checkExist){
+            throw new ApiError(400, 'Previously Added !')
+        }
+        const result = await updateMenuServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Menu Update successfully !'
+            });
+        } else {
+            throw new ApiError(400, 'Menu Update failed !');
         }
     } catch (error) {
         next(error);

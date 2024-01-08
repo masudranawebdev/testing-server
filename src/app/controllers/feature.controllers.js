@@ -44,26 +44,6 @@ exports.postFeature = async (req, res, next) => {
     }
 }
 
-// Update Feature item information
-exports.updateFeatureInfo = async (req, res, next) => {
-    try {
-        const data = req.body;
-        const result= await updateFeatureServices(data);
-        if (result?.modifiedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Feature update successfully !'
-            });
-        }else{
-            throw new ApiError(400, 'Feature update failed !')
-        }
-
-    } catch (error) {
-        next(error);
-    }
-}
-
 // delete A Feature item
 exports.deleteAFeatureInfo = async (req, res, next) => {
     try {

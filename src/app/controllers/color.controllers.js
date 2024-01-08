@@ -44,26 +44,6 @@ exports.postColor= async (req, res, next) => {
     }
 }
 
-// Update Color item information
-exports.updateColorInfo = async (req, res) => {
-    try {
-        const data = req.body;
-        const result= await updateColorServices(data);
-        if (result?.modifiedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Color update successfully !'
-            });
-        }else{
-            throw new ApiError(400, 'Color update failed !')
-        }
-
-    } catch (error) {
-        next(error);
-    }
-}
-
 // delete A Color item
 exports.deleteAColorInfo = async (req, res, next) => {
     try {
