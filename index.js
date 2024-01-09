@@ -6,6 +6,7 @@ const httpStatus = require("http-status");
 const connectDB = require("./server");
 const routes = require('./src/routes/routes');
 const globalErrorHandler = require("./src/middleware/global.error.handler");
+const path = require('path');
 
 app.use(express.json());
 app.use(cors());
@@ -17,6 +18,9 @@ app.get("/", (req, res) => {
 
 // Import All Api
 app.use('/api/v1', routes);
+app.use('/api/v1/collectionImages', express.static(path.join(__dirname, 'collection.images')));
+app.use('/api/v1/categoryImages', express.static(path.join(__dirname, 'category.images')));
+app.use('/api/v1/subCategoryImages', express.static(path.join(__dirname, 'sub_category.images')));
 
 
 //global error handler

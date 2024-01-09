@@ -24,7 +24,11 @@ exports.getAllSub_Category = async (req, res, next) => {
 // post a Sub_Category
 exports.postSub_Category = async (req, res, next) => {
     try {
-        const data = req.body;
+        if (req.files && 'sub_category_image' in req.files && req.body) {
+        const categoryImage = req.files['sub_category_image'][0];
+            const sub_category_image = categoryImage?.filename;
+            const requestData = req.body;
+            const data = { ...requestData, sub_category_image }
         const exist = await checkASub_CategoryExits(data?.sub_category);
         if(exist){
             throw new ApiError(400, 'Previously Added !')
@@ -39,6 +43,10 @@ exports.postSub_Category = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Sub_Category Added Failed !')
+        }
+        else {
+            throw new ApiError(400, 'Image Upload Failed !')
+        }
     } catch (error) {
         next(error)
     }
@@ -49,10 +57,14 @@ exports.updateSub_CategoryInfo = async (req, res, next) => {
     try {
         const data = req.body;
         const checkExist = await checkASubCategoryExitsInCategoryWhenUpdate(data?.sub_category);
-        if(checkExist){
+        if(checkExist && data?._id != checkExist?._id){
             throw new ApiError(400, 'Previously Added !')
         }
-        const result= await updateSub_CategoryServices(data);
+        if (req.files && 'sub_category_image' in req.files && req.body) {
+        const categoryImage = req.files['sub_category_image'][0];
+            const sub_category_image = categoryImage?.filename;
+            const sendData = { ...data, sub_category_image }
+            const result= await updateSub_CategoryServices(sendData);
         if (result?.modifiedCount > 0) {
             sendResponse(res, {
                 statusCode: httpStatus.OK,
@@ -61,6 +73,19 @@ exports.updateSub_CategoryInfo = async (req, res, next) => {
             });
         }else{
             throw new ApiError(400, 'Sub_Category update failed !')
+        }
+        }
+        else{
+            const result= await updateSub_CategoryServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Sub_Category update successfully !'
+            });
+        }else{
+            throw new ApiError(400, 'Sub_Category update failed !')
+        }
         }
 
     } catch (error) {
@@ -74,7 +99,7 @@ exports.deleteASub_CategoryInfo = async (req, res, next) => {
         const id = req.body._id;
         const existProduct = await checkASubCategoryExitsInProducts(id);
         if(existProduct?.length > 0){
-            throw new ApiError(400, 'This menu is exist in products !');
+            throw new ApiError(400, 'This category is exist in products !');
         }
         const result = await deleteSub_CategoryServices(id);
         if (result?.deletedCount > 0) {
