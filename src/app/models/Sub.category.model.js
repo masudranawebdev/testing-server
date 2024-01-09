@@ -6,6 +6,10 @@ const sub_categorySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    sub_category_image: {
+        type: String,
+        required: true,
+    },
     menuId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'menus',

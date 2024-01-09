@@ -24,7 +24,11 @@ exports.getAllCategory = async (req, res, next) => {
 // post a Category
 exports.postCategory = async (req, res, next) => {
     try {
-        const data = req.body;
+        if (req.files && 'category_image' in req.files && req.body) {
+        const categoryImage = req.files['category_image'][0];
+            const category_image = categoryImage?.filename;
+            const requestData = req.body;
+            const data = { ...requestData, category_image }
         const exist = await checkACategoryExits(data?.category);
         if(exist){
             throw new ApiError(400, 'Previously Added !')
@@ -39,6 +43,10 @@ exports.postCategory = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Category Added Failed !')
+        }
+        else {
+            throw new ApiError(400, 'Image Upload Failed !')
+        }
     } catch (error) {
         next(error)
     }
@@ -49,9 +57,24 @@ exports.updateCategoryInfo = async (req, res, next) => {
     try {
         const data = req.body;
         const checkExist = await checkACategoryExitsInCategoryWhenUpdate(data?.category);
-        if(checkExist){
+        if(checkExist && data?._id != checkExist?._id){
             throw new ApiError(400, 'Previously Added !')
         }
+        if (req.files && 'category_image' in req.files && req.body) {
+        const categoryImage = req.files['category_image'][0];
+            const category_image = categoryImage?.filename;
+            const sendData = { ...data, category_image }
+            const result= await updateCategoryServices(sendData);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Category update successfully !'
+            });
+        }else{
+            throw new ApiError(400, 'Category update failed !')
+        }
+        }else{
         const result= await updateCategoryServices(data);
         if (result?.modifiedCount > 0) {
             sendResponse(res, {
@@ -62,6 +85,7 @@ exports.updateCategoryInfo = async (req, res, next) => {
         }else{
             throw new ApiError(400, 'Category update failed !')
         }
+    }
 
     } catch (error) {
         next(error);

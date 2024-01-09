@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllCollectionService, checkACollectionExits, postCollectionServices, updateCollectionServices, deleteCollectionServices } = require("../services/collection.services");
+const { getAllCollectionService, checkACollectionExits, postCollectionServices, updateCollectionServices, deleteCollectionServices, checkACollectionExitsInProducts, checkACollectionExitsInCollectionWhenUpdate } = require("../services/collection.services");
 
 // get all Collection
 exports.getAllCollection = async (req, res, next) => {
@@ -24,8 +24,12 @@ exports.getAllCollection = async (req, res, next) => {
 // post a Collection
 exports.postCollection = async (req, res, next) => {
     try {
-        const data = req.body;
-        const exist = await checkACollectionExits(data?.collection_name);
+        if (req.files && 'collection_image' in req.files && req.body) {
+            const collectionImage = req.files['collection_image'][0];
+            const collection_image = collectionImage?.filename;
+            const requestData = req.body;
+            const data = { ...requestData, collection_image }
+            const exist = await checkACollectionExits(data?.collection_name);
         if(exist){
             throw new ApiError(400, 'Previously Added !')
         }
@@ -39,8 +43,53 @@ exports.postCollection = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Collection Added Failed !')
+        }
+        else {
+            throw new ApiError(400, 'Image Upload Failed !')
+        }
     } catch (error) {
         next(error)
+    }
+}
+
+// Update Collection item information
+exports.updateCollectionInfo = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const checkExist = await checkACollectionExitsInCollectionWhenUpdate(data?.collection_name);
+        if(checkExist && data?._id != checkExist?._id){
+            throw new ApiError(400, 'Previously Added !')
+        }
+        if (req.files && 'collection_image' in req.files && req.body) {
+        const collectionImage = req.files['collection_image'][0];
+            const collection_image = collectionImage?.filename;
+            const sendData = { ...data, collection_image }
+            const result= await updateCollectionServices(sendData);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Sub_Category update successfully !'
+            });
+        }else{
+            throw new ApiError(400, 'Sub_Category update failed !')
+        }
+        }
+        else{
+            const result= await updateCollectionServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Sub_Category update successfully !'
+            });
+        }else{
+            throw new ApiError(400, 'Sub_Category update failed !')
+        }
+        }
+
+    } catch (error) {
+        next(error);
     }
 }
 
@@ -48,6 +97,10 @@ exports.postCollection = async (req, res, next) => {
 exports.deleteACollectionInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const existProduct = await checkACollectionExitsInProducts(id);
+        if(existProduct?.length > 0){
+            throw new ApiError(400, 'This collection is exist in products !');
+        }
         const result = await deleteCollectionServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {
