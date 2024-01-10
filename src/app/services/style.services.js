@@ -25,3 +25,17 @@ exports.deleteStyleServices = async (id) => {
     });
     return Style;
 };
+
+// Check A Style when it is update exist in products
+exports.checkAStyleExitsInProductWhenUpdate = async (style) => {
+    const checkStyle = await StyleModel.find({style: style});
+    return checkStyle;
+}
+
+// Update a Style
+exports.updateStyleServices = async(data) =>{
+    const updateStyleInfo = await StyleModel.findOne({_id: data?._id})
+    const Style = await StyleModel.updateOne(updateStyleInfo, data, {
+    runValidators: true });
+    return Style;
+}

@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const ApiError = require("../../errors/ApiError");
 const sendResponse = require("../../shared/send.response");
-const { deleteColorServices, updateColorServices, postColorServices, getAllColorService, checkAColorExits } = require("../services/color.services");
+const { deleteColorServices, updateColorServices, postColorServices, getAllColorService, checkAColorExits, checkAColorExitsInProductWhenUpdate } = require("../services/color.services");
 
 // get all color
 exports.getAllColor= async (req, res, next) => {
@@ -57,6 +57,29 @@ exports.deleteAColorInfo = async (req, res, next) => {
             });
         } else {
             throw new ApiError(400, 'Color delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update A Color item
+exports.updateAColorInfo = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const checkExist = await checkAColorExitsInProductWhenUpdate(data?.color);
+        if(checkExist.length > 0 ){
+            throw new ApiError(400, 'Previously Added !')
+        }
+        const result = await updateColorServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Color Update successfully !'
+            });
+        } else {
+            throw new ApiError(400, 'Color Update failed !');
         }
     } catch (error) {
         next(error);

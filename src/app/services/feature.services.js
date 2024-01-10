@@ -25,3 +25,17 @@ exports.deleteFeatureServices = async (id) => {
     });
     return Feature;
 };
+
+// Check A Feature when it is update exist in products
+exports.checkAFeatureExitsInProductWhenUpdate = async (feature) => {
+    const checkFeature = await FeatureModel.find({feature: feature});
+    return checkFeature;
+}
+
+// Update a Feature
+exports.updateFeatureServices = async(data) =>{
+    const updateFeatureInfo = await FeatureModel.findOne({_id: data?._id})
+    const Feature = await FeatureModel.updateOne(updateFeatureInfo, data, {
+    runValidators: true });
+    return Feature;
+}

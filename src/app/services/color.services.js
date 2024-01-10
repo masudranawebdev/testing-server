@@ -26,3 +26,17 @@ exports.deleteColorServices = async (id) => {
     });
     return color;
 };
+
+// Check A Color when it is update exist in products
+exports.checkAColorExitsInProductWhenUpdate = async (color) => {
+    const checkColor = await ColorModel.find({color: color});
+    return checkColor;
+}
+
+// Update a Color
+exports.updateColorServices = async(data) =>{
+    const updateColorInfo = await ColorModel.findOne({_id: data?._id})
+    const Color = await ColorModel.updateOne(updateColorInfo, data, {
+    runValidators: true });
+    return Color;
+}
