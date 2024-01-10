@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllFeatureService, checkAFeatureExits, postFeatureServices, updateFeatureServices, deleteFeatureServices } = require("../services/feature.services");
+const { getAllFeatureService, checkAFeatureExits, postFeatureServices, updateFeatureServices, deleteFeatureServices, checkAFeatureExitsInProductWhenUpdate } = require("../services/feature.services");
 
 // get all Feature
 exports.getAllFeature = async (req, res, next) => {
@@ -57,6 +57,29 @@ exports.deleteAFeatureInfo = async (req, res, next) => {
             });
         } else {
             throw new ApiError(400, 'Feature delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update A Feature item
+exports.updateAFeatureInfo = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const checkExist = await checkAFeatureExitsInProductWhenUpdate(data?.feature);
+        if(checkExist.length > 0 ){
+            throw new ApiError(400, 'Previously Added !')
+        }
+        const result = await updateFeatureServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Feature Update successfully !'
+            });
+        } else {
+            throw new ApiError(400, 'Feature Update failed !');
         }
     } catch (error) {
         next(error);

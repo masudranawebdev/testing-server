@@ -9,6 +9,8 @@ const StyleRoutes = require('../app/routes/style.routes');
 const FeatureRoutes = require('../app/routes/feature.routes');
 const UserLoginRoutes = require('../app/routes/user.login.routes');
 const GetMeRoutes = require('../app/routes/get.me.routes');
+const SliderRoutes = require('../app/routes/slider.routes');
+const ProductRoutes = require('../app/routes/product.routes');
 
 const router = express.Router();
 
@@ -52,6 +54,14 @@ const moduleRoutes = [
   {
     path: '/feature',
     route: FeatureRoutes.router,
+  },
+  {
+    path: '/slider',
+    route: SliderRoutes.router,
+  },
+  {
+    path: '/product',
+    route: ProductRoutes.router,
   },
 ];
 

@@ -21,6 +21,7 @@ app.use('/api/v1', routes);
 app.use('/api/v1/collectionImages', express.static(path.join(__dirname, 'collection.images')));
 app.use('/api/v1/categoryImages', express.static(path.join(__dirname, 'category.images')));
 app.use('/api/v1/subCategoryImages', express.static(path.join(__dirname, 'sub_category.images')));
+app.use('/api/v1/sliderImages', express.static(path.join(__dirname, 'slider.images')));
 
 
 //global error handler

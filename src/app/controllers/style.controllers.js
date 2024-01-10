@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllStyleService, checkAStyleExits, postStyleServices, updateStyleServices, deleteStyleServices } = require("../services/style.services");
+const { getAllStyleService, checkAStyleExits, postStyleServices, updateStyleServices, deleteStyleServices, checkAStyleExitsInProductWhenUpdate } = require("../services/style.services");
 
 // get all Style
 exports.getAllStyle = async (req, res, next) => {
@@ -57,6 +57,29 @@ exports.deleteAStyleInfo = async (req, res, next) => {
             });
         } else {
             throw new ApiError(400, 'Style delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update A Style item
+exports.updateAStyleInfo = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const checkExist = await checkAStyleExitsInProductWhenUpdate(data?.style);
+        if(checkExist.length > 0 ){
+            throw new ApiError(400, 'Previously Added !')
+        }
+        const result = await updateStyleServices(data);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Style Update successfully !'
+            });
+        } else {
+            throw new ApiError(400, 'Style Update failed !');
         }
     } catch (error) {
         next(error);
