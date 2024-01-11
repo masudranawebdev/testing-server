@@ -1,12 +1,31 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllCategoryService, checkACategoryExits, postCategoryServices, updateCategoryServices, deleteCategoryServices, checkACategoryExitsInSubCategory, checkACategoryExitsInProducts, checkACategoryExitsInCategoryWhenUpdate } = require("../services/category.services");
+const { getAllCategoryService, checkACategoryExits, postCategoryServices, updateCategoryServices, deleteCategoryServices, checkACategoryExitsInSubCategory, checkACategoryExitsInProducts, checkACategoryExitsInCategoryWhenUpdate, getAllCategoryServiceMatchMenuId } = require("../services/category.services");
 
 // get all Category
 exports.getAllCategory = async (req, res, next) => {
     try {
         const result = await getAllCategoryService();
+        if(result){
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Category Found successfully !',
+                data: result,
+            });
+        }
+        throw new ApiError(400, 'Category Found Failed !')
+    } catch (error) {
+        next(error)
+    }
+}
+
+// get all Category for product add compare menu
+exports.getAllCategoryMatchMenu = async (req, res, next) => {
+    try {
+        const menuId = req.query.menuId;
+        const result = await getAllCategoryServiceMatchMenuId(menuId);
         if(result){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,

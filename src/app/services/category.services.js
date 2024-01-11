@@ -14,6 +14,12 @@ exports.getAllCategoryService = async () => {
     return getAllCategoryData;
 }
 
+// Find All Category to find menu
+exports.getAllCategoryServiceMatchMenuId = async (id) => {
+    const getAllCategoryData = await CategoryModel.find({menuId: id }).populate('menuId');
+    return getAllCategoryData;
+}
+
 // Add A Category
 exports.postCategoryServices = async (data) => {
     const createCategory = await CategoryModel.create(data);

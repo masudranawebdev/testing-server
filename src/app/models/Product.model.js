@@ -12,6 +12,11 @@ const productSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
+        required: true,
+        unique: true
+    },
+    related: {
+        type: String,
         required: true
     },
     description: {
@@ -25,8 +30,9 @@ const productSchema = new mongoose.Schema({
     discount_price: {
         type: Number
     },
-    color: {
-        type: String,
+    colorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'colors',
         required: true
     },
     size_variation: [
@@ -43,6 +49,19 @@ const productSchema = new mongoose.Schema({
             discount_price: Number
         }
     ],
+    thumbnail_image: {
+        type: String,
+        required: true
+    },
+    hover_image: {
+        type: String,
+        required: true
+    },
+    images: [
+        {
+            image: String
+        }
+    ],
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'categories',
@@ -53,7 +72,7 @@ const productSchema = new mongoose.Schema({
         ref: 'menus',
         required: true
     },
-    SubCategoryId: {
+    subCategoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'subcategories',
         required: true
@@ -69,11 +88,7 @@ const productSchema = new mongoose.Schema({
     featureId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'features',
-    },
-    galleryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'galleries',
-    },
+    }
 },
 {
     timestamps: true

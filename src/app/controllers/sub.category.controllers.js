@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices, checkASubCategoryExitsInCategoryWhenUpdate, checkASubCategoryExitsInProducts } = require("../services/sub.category.services");
+const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices, checkASubCategoryExitsInCategoryWhenUpdate, checkASubCategoryExitsInProducts, getAllCategoryServiceMatchMenuIdAndCategoryId } = require("../services/sub.category.services");
 
 // get all Sub_Category
 exports.getAllSub_Category = async (req, res, next) => {
@@ -16,6 +16,26 @@ exports.getAllSub_Category = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Sub_Category Found Failed !')
+    } catch (error) {
+        next(error)
+    }
+}
+
+// get all Category for product add compare menu and category
+exports.getAllCategoryMatchMenuAndCategory = async (req, res, next) => {
+    try {
+        const menuId = req.query.menuId;
+        const categoryId = req.query.categoryId;
+        const result = await getAllCategoryServiceMatchMenuIdAndCategoryId(menuId, categoryId);
+        if(result){
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Category Found successfully !',
+                data: result,
+            });
+        }
+        throw new ApiError(400, 'Category Found Failed !')
     } catch (error) {
         next(error)
     }
