@@ -13,6 +13,14 @@ exports.getAllSub_CategoryService = async () => {
     return getAllSub_CategoryData;
 }
 
+// Find All Category to find menu and category
+exports.getAllCategoryServiceMatchMenuIdAndCategoryId = async (menuId, categoryId) => {
+    const getAllCategoryData = await Sub_CategoryModel.find({ menuId: menuId, categoryId: categoryId })
+  .populate('menuId') // Separate fields with a space, not a comma
+  .populate('categoryId');
+    return getAllCategoryData;
+}
+
 // Add A Sub_Category
 exports.postSub_CategoryServices = async (data) => {
     const createSub_Category = await Sub_CategoryModel.create(data);

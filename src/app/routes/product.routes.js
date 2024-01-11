@@ -4,7 +4,7 @@ const { ProductImageUpload } = require("../../helpers/product.image");
 const router = express.Router();
 
 // get post delete and update Product Item
-router.route('/').get(getAllProduct).post(ProductImageUpload.fields([{ name: 'product', maxCount: 1 }]), postProduct).patch(ProductImageUpload.fields([{ name: 'product', maxCount: 1 }]), updateProductInfo).delete(deleteAProductInfo)
+router.route('/').get(getAllProduct).post(postProduct).patch(ProductImageUpload.fields([{ name: 'product', maxCount: 1 }]), updateProductInfo).delete(deleteAProductInfo)
 
 router.route('/:id').get(getAProduct)
 

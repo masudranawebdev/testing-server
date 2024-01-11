@@ -43,10 +43,7 @@ exports.getAProduct = async (req, res, next) => {
 // post a Product
 exports.postProduct = async (req, res, next) => {
     try {
-        if (req.files && 'product' in req.files) {
-        const ProductImage = req.files['product'][0];
-        const Product = ProductImage?.filename;
-        const data = { Product };
+        const data = req.body;
         const result = await postProductServices(data);
         if(result){
             return sendResponse(res, {
@@ -57,10 +54,6 @@ exports.postProduct = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Product Added Failed !')
-        }
-        else {
-            throw new ApiError(400, 'Image Upload Failed !')
-        }
     } catch (error) {
         next(error)
     }
