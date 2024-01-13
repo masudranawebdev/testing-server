@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices, checkASubCategoryExitsInCategoryWhenUpdate, checkASubCategoryExitsInProducts, getAllCategoryServiceMatchMenuIdAndCategoryId } = require("../services/sub.category.services");
+const { getAllSub_CategoryService, checkASub_CategoryExits, updateSub_CategoryServices, deleteSub_CategoryServices, postSub_CategoryServices, checkASubCategoryExitsInProducts, getAllCategoryServiceMatchMenuIdAndCategoryId } = require("../services/sub.category.services");
 
 // get all Sub_Category
 exports.getAllSub_Category = async (req, res, next) => {
@@ -76,7 +76,7 @@ exports.postSub_Category = async (req, res, next) => {
 exports.updateSub_CategoryInfo = async (req, res, next) => {
     try {
         const data = req.body;
-        const checkExist = await checkASubCategoryExitsInCategoryWhenUpdate(data?.sub_category);
+        const checkExist = await checkASub_CategoryExits(data?.sub_category, data?.menuId, data?.categoryId);
         if(checkExist && data?._id != checkExist?._id){
             throw new ApiError(400, 'Previously Added !')
         }
