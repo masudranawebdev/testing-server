@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { getAllMenuService, postMenuServices, updateMenuServices, deleteMenuServices, checkAMenuExits, checkAMenuExitsInCategory, checkAMenuExitsInSubCategory, checkAMenuExitsInMenu, checkAMenuExitsInProducts } = require("../services/menu.services");
+const { getAllMenuService, postMenuServices, updateMenuServices, deleteMenuServices, checkAMenuExits, checkAMenuExitsInCategory, checkAMenuExitsInSubCategory, checkAMenuExitsInMenu, checkAMenuExitsInProducts, getAllCategoryAndSubcategoryServices } = require("../services/menu.services");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 
@@ -97,3 +97,22 @@ exports.updateAMenuInfo = async (req, res, next) => {
         next(error);
     }
 };
+
+// get all Categry and sub category for hover
+exports.getAllCategoryAndSubCategory = async (req, res, next) => {
+    try {
+        const menuId = req.params.menuId;
+        const result = await getAllCategoryAndSubcategoryServices(menuId);
+        if(result){
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Menu Found successfully !',
+                data: result,
+            });
+        }
+        throw new ApiError(400, 'Menu Found Failed !')
+    } catch (error) {
+        next(error)
+    }
+}

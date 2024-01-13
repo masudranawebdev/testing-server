@@ -2,17 +2,24 @@ const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 const { getAllProductService, postProductServices, updateProductServices, deleteProductServices, getAProductService } = require("../services/products.services");
+const ProductModel = require("../models/Product.model");
 
 // get all Product
 exports.getAllProduct = async (req, res, next) => {
     try {
-        const result = await getAllProductService();
+        const {page, limit} = req.query;
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+        const skip = (pageNumber - 1) * limitNumber;
+        const result = await getAllProductService(limitNumber, skip);
+        const total = await ProductModel.countDocuments();
         if(result){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Product Found successfully !',
                 data: result,
+                totalData: total
             });
         }
         throw new ApiError(400, 'Product Found Failed !')

@@ -60,3 +60,31 @@ exports.updateMenuServices = async (data) => {
     });
     return Menu;
 };
+
+// Find All Category and subcategory for hover
+exports.getAllCategoryAndSubcategoryServices = async (menuId) => {
+    const FindCategory = await CategoryModel.find({ menuId: menuId });
+
+        if (FindCategory.length === 0) {
+            // No categories found for the given menuId
+            return null;
+        }
+
+        const categoryAndSubcategories = [];
+
+        for (const category of FindCategory) {
+            const categoryId = category._id;
+
+            const subcategories = await Sub_CategoryModel.find({
+                menuId: menuId,
+                categoryId: categoryId
+            });
+
+            categoryAndSubcategories.push({
+                category: category,
+                subcategories: subcategories
+            });
+        }
+
+        return categoryAndSubcategories;
+}
