@@ -27,12 +27,6 @@ exports.postSub_CategoryServices = async (data) => {
     return createSub_Category;
 }
 
-// Find A SubCategory is Exist when update ?
-exports.checkASubCategoryExitsInCategoryWhenUpdate = async (sub_category) => {
-    const findSubCategory = await Sub_CategoryModel.findOne({ sub_category: sub_category }); 
-    return findSubCategory;
-}
-
 // Update a Sub_Category
 exports.updateSub_CategoryServices = async(data) =>{
     const updateSub_CategoryInfo = await Sub_CategoryModel.findOne({_id: data?._id})

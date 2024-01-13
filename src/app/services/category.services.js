@@ -26,12 +26,6 @@ exports.postCategoryServices = async (data) => {
     return createCategory;
 }
 
-// Find A Category is Exist when update ?
-exports.checkACategoryExitsInCategoryWhenUpdate = async (category) => {
-    const findCategory = await CategoryModel.findOne({ category: category }); 
-    return findCategory;
-}
-
 // Update a Category
 exports.updateCategoryServices = async(data) =>{
     const updateCategoryInfo = await CategoryModel.findOne({_id: data?._id})
