@@ -2,8 +2,8 @@ const ProductModel = require("../models/Product.model");
 const Sub_CategoryModel = require("../models/Sub.category.model");
 
 // Find A Sub_Category is Exist ?
-exports.checkASub_CategoryExits = async (sub_category) => {
-    const FindSub_Category = await Sub_CategoryModel.findOne({ sub_category: sub_category });
+exports.checkASub_CategoryExits = async (sub_category, menuId, categoryId) => {
+    const FindSub_Category = await Sub_CategoryModel.findOne({ sub_category: sub_category, menuId: menuId, categoryId: categoryId });
     return FindSub_Category;
 }
 

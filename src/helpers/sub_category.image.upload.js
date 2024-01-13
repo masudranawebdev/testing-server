@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 exports.Sub_CategoryImageUpload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-        const supportedImage = /png|jpg|webp|jpeg/;
+        const supportedImage = /png|jpg|webp|jpeg|PNG|JPG|WEBP|JPEG/;
         const extension = path.extname(file.originalname);
 
         if (supportedImage.test(extension)) {
