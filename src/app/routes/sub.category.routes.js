@@ -6,7 +6,7 @@ const router = express.Router();
 // get post delete and update Sub_Category Item
 router.route('/').get(getAllSub_Category).post(Sub_CategoryImageUpload.fields([{ name: 'sub_category_image', maxCount: 1 }]), postSub_Category).patch(Sub_CategoryImageUpload.fields([{ name: 'sub_category_image', maxCount: 1 }]), updateSub_CategoryInfo).delete(deleteASub_CategoryInfo)
 
-router.route('/menuIdAndSubCategoryId').get(getAllCategoryMatchMenuAndCategory)
+router.route('/menuIdAndCategoryId').get(getAllCategoryMatchMenuAndCategory)
 
 const Sub_CategoryRoutes = {
     router

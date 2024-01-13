@@ -1,8 +1,8 @@
 const ProductModel = require("../models/Product.model");
 
 // Find All Product
-exports.getAllProductService = async () => {
-    const getAllProductData = await ProductModel.find({});
+exports.getAllProductService = async (limit, skip) => {
+    const getAllProductData = await ProductModel.find({}).sort({ "_id": -1 }).skip(skip).limit(limit).populate(['menuId', 'categoryId', 'collectionId', 'colorId', 'featureId', 'styleId', 'subCategoryId'])
     return getAllProductData;
 }
 

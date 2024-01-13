@@ -3,9 +3,34 @@ const bcrypt = require("bcryptjs");
 const ApiError = require("../../errors/ApiError");
 const sendResponse = require("../../shared/send.response");
 const httpStatus = require("http-status");
-const { checkAUserExits, postRegUserServices, updateRegUserOTPServices, updateUserVerificationServices } = require("../services/user.reg.services");
+const { checkAUserExits, postRegUserServices, updateRegUserOTPServices, updateUserVerificationServices, findAllUser, deleteUserServices } = require("../services/user.reg.services");
 const { SendOTP } = require("../../middleware/sendOTP");
+const UserModel = require("../models/User.model");
 const saltRounds = 10;
+
+// get all user
+exports.getAllUser = async (req, res, next) => {
+    try {
+        const {page, limit} = req.query;
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+        const skip = (pageNumber - 1) * limitNumber;
+        const result = await findAllUser(limitNumber, skip);
+        const total = await UserModel.countDocuments();
+        if(result){
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Users Found successfully !',
+                data: result,
+                totalData: total
+            });
+        }
+        throw new ApiError(400, 'Users Found Failed !')
+    } catch (error) {
+        next(error)
+    }
+}
 
 // registration a user
 exports.postRegUser = async (req, res, next) => {
@@ -102,5 +127,24 @@ exports.postRegUserResendCode = async (req, res, next) => {
         }
     } catch (error) {
         next(error)
+    }
+}
+
+// delete a user
+exports.deleteAUser = async (req, res, next) => {
+    try {
+        const data = req.body;
+            const userDelete = await deleteUserServices(data?._id);
+            if (userDelete?.deletedCount > 0) {
+                sendResponse(res, {
+                    statusCode: httpStatus.OK,
+                    success: true,
+                    message: 'User delete successfully !'
+                });
+            } else {
+                throw new ApiError(400, 'Something went wrong !')
+            }
+    } catch (error) {
+        next(error);
     }
 }
