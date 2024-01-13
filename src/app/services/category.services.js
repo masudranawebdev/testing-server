@@ -3,8 +3,8 @@ const ProductModel = require("../models/Product.model");
 const Sub_CategoryModel = require("../models/Sub.category.model");
 
 // Find A Category is Exist ?
-exports.checkACategoryExits = async (category) => {
-    const FindCategory = await CategoryModel.findOne({ category: category });
+exports.checkACategoryExits = async (category, menuId) => {
+    const FindCategory = await CategoryModel.findOne({ category: category, menuId: menuId });
     return FindCategory;
 }
 

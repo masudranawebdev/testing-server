@@ -49,7 +49,7 @@ exports.postSub_Category = async (req, res, next) => {
             const sub_category_image = categoryImage?.filename;
             const requestData = req.body;
             const data = { ...requestData, sub_category_image }
-        const exist = await checkASub_CategoryExits(data?.sub_category);
+        const exist = await checkASub_CategoryExits(data?.sub_category, data?.menuId, data?.categoryId);
         if(exist){
             throw new ApiError(400, 'Previously Added !')
         }
