@@ -21,15 +21,21 @@ exports.postProductServices = async (data) => {
 // Update a Product
 exports.updateProductServices = async(data) =>{
     const updateProductInfo = await ProductModel.findOne({_id: data?._id})
-    const Product = await ProductModel.updateOne(updateProductInfo, data, {
+    const product = await ProductModel.updateOne(updateProductInfo, data, {
     runValidators: true });
-    return Product;
+    return product;
 }
 
 // Delete a Product
 exports.deleteProductServices = async (id) => {
-    const Product = await ProductModel.deleteOne({ _id: id }, {
+    const product = await ProductModel.deleteOne({ _id: id }, {
         runValidators: true
     });
-    return Product;
+    return product;
 };
+
+// search product
+exports.getSearchProductService = async (searchData) => {
+    const product = await ProductModel.find({ title: searchData });
+    return product;
+}

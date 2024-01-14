@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllProductService, postProductServices, updateProductServices, deleteProductServices, getAProductService } = require("../services/products.services");
+const { getAllProductService, postProductServices, updateProductServices, deleteProductServices, getAProductService, getSearchProductService } = require("../services/products.services");
 const ProductModel = require("../models/Product.model");
 
 // get all Product
@@ -100,6 +100,27 @@ exports.deleteAProductInfo = async (req, res, next) => {
         } else {
             throw new ApiError(400, 'Product delete failed !');
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// search Product item
+exports.getSearchProductInfo = async (req, res, next) => {
+    try {
+        const searchTerm = req.params.term;
+        const searchData = { $regex: searchTerm, $options: 'i' }
+        const data = await getSearchProductService(searchData);
+        if (data) {
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product get successfully !',
+                data: data
+            });
+        }
+        throw new ApiError(400, 'Product get failed !');
     } catch (error) {
         next(error);
     }
