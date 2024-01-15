@@ -30,12 +30,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    productId: {
-        type: String,
-        required: true
-    },
     order: [
         {
+            productId: {
+                type: String,
+                required: true
+            },
             size_variationId: {
                 type: String,
                 required: true
