@@ -10,7 +10,7 @@ router.route('/').get(getAllProduct).post(verifyToken, postProduct).patch(verify
 router.route('/searchProduct/:term').get(getSearchProductInfo)
 
 // get single product
-router.route('/:id').get(getAProduct)
+router.route('/:slug').get(getAProduct)
 
 const ProductRoutes = {
     router

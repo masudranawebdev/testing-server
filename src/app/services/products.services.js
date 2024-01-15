@@ -7,8 +7,8 @@ exports.getAllProductService = async (limit, skip) => {
 }
 
 // Find A Product
-exports.getAProductService = async (id) => {
-    const getAProductData = await ProductModel.find({_id: id});
+exports.getAProductService = async (slug) => {
+    const getAProductData = await ProductModel.findOne({slug: slug});
     return getAProductData;
 }
 

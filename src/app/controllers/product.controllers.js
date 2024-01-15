@@ -31,8 +31,8 @@ exports.getAllProduct = async (req, res, next) => {
 // get a Product
 exports.getAProduct = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        const result = await getAProductService(id);
+        const slug = req.params.slug;
+        const result = await getAProductService(slug);
         if(result){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
