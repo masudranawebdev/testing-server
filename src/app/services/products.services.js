@@ -8,7 +8,7 @@ exports.getAllProductService = async (limit, skip) => {
 
 // Find A Product
 exports.getAProductService = async (slug) => {
-    const getAProductData = await ProductModel.findOne({slug: slug});
+    const getAProductData = await ProductModel.findOne({slug: slug}).populate(['menuId', 'categoryId', 'collectionId', 'colorId', 'featureId', 'styleId', 'subCategoryId']);
     return getAProductData;
 }
 
