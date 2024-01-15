@@ -34,7 +34,7 @@ exports.postOrderWithCardServices = async (data) => {
         const updatedSizeVariation = await ProductModel.findOneAndUpdate(
             {
                 _id: productId,
-                'size_variation._id': orderItem.size_variation,
+                'size_variation._id': orderItem.size_variationId,
             },
             {
                 $inc: {

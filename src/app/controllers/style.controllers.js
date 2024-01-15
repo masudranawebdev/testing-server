@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllStyleService, checkAStyleExits, postStyleServices, updateStyleServices, deleteStyleServices, checkAStyleExitsInProductWhenUpdate } = require("../services/style.services");
+const { getAllStyleService, checkAStyleExits, postStyleServices, updateStyleServices, deleteStyleServices, checkAStyleExitsInProductWhenUpdate, checkAStyleExitsInProductWhenDelete } = require("../services/style.services");
 
 // get all Style
 exports.getAllStyle = async (req, res, next) => {
@@ -48,6 +48,10 @@ exports.postStyle = async (req, res, next) => {
 exports.deleteAStyleInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const checkExist = await checkAStyleExitsInProductWhenDelete(id)
+        if(checkExist.length > 0 ){
+            throw new ApiError(400, 'This Style exist in a product !')
+        }
         const result = await deleteStyleServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {

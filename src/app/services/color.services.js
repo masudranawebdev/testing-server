@@ -1,4 +1,5 @@
 const ColorModel = require("../models/Color.model");
+const ProductModel = require("../models/Product.model");
 
 // Find A Color is Exist ?
 exports.checkAColorExits = async (color) => {
@@ -17,6 +18,12 @@ exports.getAllColorService = async () => {
 exports.postColorServices = async (data) => {
     const createColor = await ColorModel.create(data);
     return createColor;
+}
+
+// Find A Color is Exist in a product ?
+exports.checkAColorExitsInProduct = async (color) => {
+    const FindColor = await ProductModel.findOne({ colorId: color });
+    return FindColor;
 }
 
 // Delete a color

@@ -19,6 +19,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    payment_type: {
+        type: String,
+        required: true
+    },
     transactionId: {
         type: String,
     },
@@ -32,7 +36,7 @@ const orderSchema = new mongoose.Schema({
     },
     order: [
         {
-            size_variation: {
+            size_variationId: {
                 type: String,
                 required: true
             },
@@ -71,5 +75,6 @@ const OrderModel = mongoose.model("orders", orderSchema);
 
 module.exports = OrderModel;
 
-// type=cardType, cash on delivery
-// status: paid, unpaid
+// type= paid, unpaid
+// status: pending, success
+// payment type = cardType, cash on delivery

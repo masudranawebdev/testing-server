@@ -1,10 +1,10 @@
 const express = require("express");
 const { getAllProduct, postProduct, updateProductInfo, deleteAProductInfo, getAProduct, getSearchProductInfo } = require("../controllers/product.controllers");
-const { ProductImageUpload } = require("../../helpers/product.image");
+const verifyToken = require("../../middleware/verify.token");
 const router = express.Router();
 
 // get post delete and update Product Item
-router.route('/').get(getAllProduct).post(postProduct).patch(ProductImageUpload.fields([{ name: 'product', maxCount: 1 }]), updateProductInfo).delete(deleteAProductInfo)
+router.route('/').get(getAllProduct).post(verifyToken, postProduct).patch(verifyToken, updateProductInfo).delete(verifyToken, deleteAProductInfo)
 
 // get search product
 router.route('/searchProduct/:term').get(getSearchProductInfo)

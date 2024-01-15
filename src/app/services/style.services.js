@@ -1,3 +1,4 @@
+const ProductModel = require("../models/Product.model");
 const StyleModel = require("../models/Style.model");
 
 // Find A Style is Exist ?
@@ -16,6 +17,12 @@ exports.getAllStyleService = async () => {
 exports.postStyleServices = async (data) => {
     const createStyle = await StyleModel.create(data);
     return createStyle;
+}
+
+// Check A Style when it is Delete exist in products
+exports.checkAStyleExitsInProductWhenDelete = async (style) => {
+    const checkStyle = await ProductModel.find({styleId: style});
+    return checkStyle;
 }
 
 // Delete a Style

@@ -1,4 +1,5 @@
 const FeatureModel = require("../models/Feature.model");
+const ProductModel = require("../models/Product.model");
 
 // Find A Feature is Exist ?
 exports.checkAFeatureExits = async (feature) => {
@@ -16,6 +17,12 @@ exports.getAllFeatureService = async () => {
 exports.postFeatureServices = async (data) => {
     const createFeature = await FeatureModel.create(data);
     return createFeature;
+}
+
+// Check A Feature when it is Delete exist in products
+exports.checkAFeatureExitsInProductWhenDelete = async (feature) => {
+    const checkFeature = await ProductModel.find({featureId: feature});
+    return checkFeature;
 }
 
 // Delete a Feature
