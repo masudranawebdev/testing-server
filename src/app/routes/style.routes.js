@@ -1,9 +1,10 @@
 const express = require("express");
-const { getAllStyle, postStyle, updateStyleInfo, deleteAStyleInfo, updateAStyleInfo } = require("../controllers/style.controllers");
+const { getAllStyle, postStyle, deleteAStyleInfo, updateAStyleInfo } = require("../controllers/style.controllers");
+const verifyToken = require("../../middleware/verify.token");
 const router = express.Router();
 
 // get post delete and update Style Item
-router.route('/').get(getAllStyle).post(postStyle).delete(deleteAStyleInfo).patch(updateAStyleInfo)
+router.route('/').get(getAllStyle).post(verifyToken, postStyle).delete(verifyToken, deleteAStyleInfo).patch(verifyToken, updateAStyleInfo)
 
 const StyleRoutes = {
     router

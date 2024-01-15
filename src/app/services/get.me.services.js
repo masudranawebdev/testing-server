@@ -2,7 +2,7 @@ const UserModel = require("../models/User.model");
 
 // Check a user is exists?
 exports.findUserInfoServices = async (email) => {
-    const users = await UserModel.findOne({ email: email });
+    const users = await UserModel.findOne({ email: email }).select('-password -verify -otp');
     return users;
 }
 

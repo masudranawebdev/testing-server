@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { getAllFeatureService, checkAFeatureExits, postFeatureServices, updateFeatureServices, deleteFeatureServices, checkAFeatureExitsInProductWhenUpdate } = require("../services/feature.services");
+const { getAllFeatureService, checkAFeatureExits, postFeatureServices, updateFeatureServices, deleteFeatureServices, checkAFeatureExitsInProductWhenUpdate, checkAFeatureExitsInProductWhenDelete } = require("../services/feature.services");
 
 // get all Feature
 exports.getAllFeature = async (req, res, next) => {
@@ -48,6 +48,10 @@ exports.postFeature = async (req, res, next) => {
 exports.deleteAFeatureInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const checkFeature = await checkAFeatureExitsInProductWhenDelete(id);
+        if(checkFeature?.length > 0){
+            throw new ApiError(400, 'This Feature is exist in a product !');
+        }
         const result = await deleteFeatureServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {

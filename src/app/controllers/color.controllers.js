@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const ApiError = require("../../errors/ApiError");
 const sendResponse = require("../../shared/send.response");
-const { deleteColorServices, updateColorServices, postColorServices, getAllColorService, checkAColorExits, checkAColorExitsInProductWhenUpdate } = require("../services/color.services");
+const { deleteColorServices, updateColorServices, postColorServices, getAllColorService, checkAColorExits, checkAColorExitsInProductWhenUpdate, checkAColorExitsInProduct } = require("../services/color.services");
 
 // get all color
 exports.getAllColor= async (req, res, next) => {
@@ -48,6 +48,10 @@ exports.postColor= async (req, res, next) => {
 exports.deleteAColorInfo = async (req, res, next) => {
     try {
         const id = req.body._id;
+        const checkInExist = await checkAColorExitsInProduct(id);
+        if(checkInExist?.length > 0){
+            throw new ApiError(400, 'This color is already exist in a product !');
+        }
         const result = await deleteColorServices(id);
         if (result?.deletedCount > 0) {
             sendResponse(res, {
