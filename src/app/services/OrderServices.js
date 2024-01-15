@@ -28,12 +28,12 @@ exports.postOrderWithCardServices = async (data) => {
         throw new ApiError(400, 'Order Added Failed !')
     }
 
-    const { productId, order } = data;
+    const { order } = data;
 
     const updatePromises = order.map(async (orderItem) => {
         const updatedSizeVariation = await ProductModel.findOneAndUpdate(
             {
-                _id: productId,
+                _id: orderItem.productId,
                 'size_variation._id': orderItem.size_variationId,
             },
             {
