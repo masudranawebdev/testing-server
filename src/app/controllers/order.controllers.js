@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { postOrderServices, getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices } = require("../services/OrderServices");
+const { postOrderServices, getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService } = require("../services/OrderServices");
 const OrderModel = require("../models/Order.model");
 
 // get all Order
@@ -131,6 +131,48 @@ exports.deleteAOrderInfo = async (req, res, next) => {
         } else {
             throw new ApiError(400, 'Order delete failed !');
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// get total Order info item
+exports.getTotalOrderInfo = async (req, res, next) => {
+    try {
+        const data = await getAllOrderInfoService();
+        const totalOrder = await OrderModel.countDocuments();
+        const pendingData = data.filter(item => item.status === 'pending');
+        const pendingOrder = pendingData.length;
+        const successData = data.filter(item => item.status === 'success');
+        const successOrder = successData.length;
+
+        // Initialize total price
+        let totalPrice = 0;
+
+        // Iterate through 'success' data and sum up the prices
+        if(successData?.length > 0){
+            successData.forEach(order => {
+            order?.order?.forEach(orderItem => {
+            totalPrice += orderItem.price * orderItem.quantity;
+                });
+            });
+        }
+        const sendData = {
+            totalOrder,
+            pendingOrder,
+            successOrder,
+            totalPrice
+        }
+        
+        if (data) {
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Order get successfully !',
+                data: sendData
+            });
+        }
+        throw new ApiError(400, 'Order get failed !');
     } catch (error) {
         next(error);
     }
