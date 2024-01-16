@@ -63,6 +63,11 @@ exports.deleteOrderWithOutCardServices = async (id) => {
     return order;
 }
 
+// get all Order
+exports.getAllOrderInfoService = async () => {
+    const order = await OrderModel.find({ });
+    return order;
+}
 
 // search Order
 exports.getSearchOrderService = async (searchData) => {
