@@ -2,6 +2,7 @@ const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 const { getAllCollectionService, checkACollectionExits, postCollectionServices, updateCollectionServices, deleteCollectionServices, checkACollectionExitsInProducts, checkACollectionExitsInCollectionWhenUpdate } = require("../services/collection.services");
+const { FileUploadHelper } = require("../../helpers/image.upload");
 
 // get all Collection
 exports.getAllCollection = async (req, res, next) => {
@@ -26,7 +27,8 @@ exports.postCollection = async (req, res, next) => {
     try {
         if (req.files && 'collection_image' in req.files && req.body) {
             const collectionImage = req.files['collection_image'][0];
-            const collection_image = collectionImage?.filename;
+            const collection_upload = await FileUploadHelper.uploadToCloudinary(collectionImage);
+            const collection_image = collection_upload?.secure_url;
             const requestData = req.body;
             const data = { ...requestData, collection_image }
             const exist = await checkACollectionExits(data?.collection_name);
@@ -61,8 +63,9 @@ exports.updateCollectionInfo = async (req, res, next) => {
             throw new ApiError(400, 'Previously Added !')
         }
         if (req.files && 'collection_image' in req.files && req.body) {
-        const collectionImage = req.files['collection_image'][0];
-            const collection_image = collectionImage?.filename;
+            const collectionImage = req.files['collection_image'][0];
+            const collection_upload = await FileUploadHelper.uploadToCloudinary(collectionImage);
+            const collection_image = collection_upload?.secure_url;
             const sendData = { ...data, collection_image }
             const result= await updateCollectionServices(sendData);
         if (result?.modifiedCount > 0) {

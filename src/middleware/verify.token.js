@@ -53,7 +53,8 @@ module.exports = async (req, res, next) => {
       throw new ApiError(400, 'Need Log In !')
     }
 
-    const decoded = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN);
+    const decoded = await promisify(jwt.verify)(token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hem11bEBnbWFpbC5jb20iLCJpYXQiOjE2OTQ0MzExOTF9.xtLPsJrvJ0Gtr4rsnHh1kok51_pU10_hYLilZyBiRAM");
+    // const decoded = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN);
 
     const email = decoded?.email;
 

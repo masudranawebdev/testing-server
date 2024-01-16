@@ -2,6 +2,7 @@ const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 const { getAllCategoryService, checkACategoryExits, postCategoryServices, updateCategoryServices, deleteCategoryServices, checkACategoryExitsInSubCategory, checkACategoryExitsInProducts, getAllCategoryServiceMatchMenuId } = require("../services/category.services");
+const { FileUploadHelper } = require("../../helpers/image.upload");
 
 // get all Category
 exports.getAllCategory = async (req, res, next) => {
@@ -44,8 +45,9 @@ exports.getAllCategoryMatchMenu = async (req, res, next) => {
 exports.postCategory = async (req, res, next) => {
     try {
         if (req.files && 'category_image' in req.files && req.body) {
-        const categoryImage = req.files['category_image'][0];
-            const category_image = categoryImage?.filename;
+            const categoryImage = req.files['category_image'][0];
+            const category_upload = await FileUploadHelper.uploadToCloudinary(categoryImage);
+            const category_image = category_upload?.secure_url;
             const requestData = req.body;
             const data = { ...requestData, category_image }
         const exist = await checkACategoryExits(data?.category, data?.menuId);
@@ -80,8 +82,9 @@ exports.updateCategoryInfo = async (req, res, next) => {
             throw new ApiError(400, 'Previously Added !')
         }
         if (req.files && 'category_image' in req.files && req.body) {
-        const categoryImage = req.files['category_image'][0];
-            const category_image = categoryImage?.filename;
+            const categoryImage = req.files['category_image'][0];
+            const category_upload = await FileUploadHelper.uploadToCloudinary(categoryImage);
+            const category_image = category_upload?.secure_url
             const sendData = { ...data, category_image }
             const result= await updateCategoryServices(sendData);
         if (result?.modifiedCount > 0) {
