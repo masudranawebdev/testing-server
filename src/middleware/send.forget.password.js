@@ -7,11 +7,14 @@ const SendForgetPasswordLink = async (email) => {
             host: 'smtp.gmail.com',
             secure: true,
             auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.pass,
+                user: "tempmaildev6@gmail.com",
+                // user: process.env.EMAIL_USERNAME,
+                pass: "qcofbnbjhcchccij",
+                // pass: process.env.pass,
             },
         });
-        const resetLink = 'http://localhost:3000/reset-password'
+        // const resetLink = 'http://localhost:3000/reset-password'
+        const resetLink = 'https://classic-it-shop.netlify.app/reset-password'
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: 'No reply <classicIt@gmail.com>', // sender address

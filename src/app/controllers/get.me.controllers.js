@@ -11,7 +11,8 @@ exports.getMeUser = async (req, res, next) => {
     try {
         const token = await req.headers?.authorization?.split(" ")?.[1];
         // const token = req.headers?.authorization;
-        const decode = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN);
+        const decode = await promisify(jwt.verify)(token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hem11bEBnbWFpbC5jb20iLCJpYXQiOjE2OTQ0MzExOTF9.xtLPsJrvJ0Gtr4rsnHh1kok51_pU10_hYLilZyBiRAM");
+        // const decode = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN);
 
         const user = await findUserInfoServices(decode.email);
 

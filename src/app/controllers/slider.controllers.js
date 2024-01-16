@@ -2,6 +2,8 @@ const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 const { getAllSliderService, postSliderServices, deleteSliderServices, updateSliderServices } = require("../services/slider.services");
+const { FileUploadHelper } = require("../../helpers/image.upload");
+
 
 // get all Slider
 exports.getAllSlider = async (req, res, next) => {
@@ -26,7 +28,8 @@ exports.postSlider = async (req, res, next) => {
     try {
         if (req.files && 'slider' in req.files) {
             const sliderImage = req.files['slider'][0];
-            const slider = sliderImage?.filename;
+            const slider_upload = await FileUploadHelper.uploadToCloudinary(sliderImage);
+            slider = slider_upload?.secure_url;
             const data = { slider };
         const result = await postSliderServices(data);
         if(result){
@@ -52,8 +55,9 @@ exports.updateSliderInfo = async (req, res, next) => {
     try {
         const data = req.body;
         if (req.files && 'slider' in req.files && req.body) {
-        const sliderImage = req.files['slider'][0];
-            const slider = sliderImage?.filename;
+            const sliderImage = req.files['slider'][0];
+            const slider_upload = await FileUploadHelper.uploadToCloudinary(sliderImage);
+            const slider = slider_upload?.secure_url;
             const sendData = { ...data, slider }
             const result= await updateSliderServices(sendData);
         if (result?.modifiedCount > 0) {

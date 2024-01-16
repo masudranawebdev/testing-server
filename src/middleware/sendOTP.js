@@ -7,8 +7,10 @@ const SendOTP = async (otp, email) => {
             host: 'smtp.gmail.com',
             secure: true,
             auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.pass,
+                user: "tempmaildev6@gmail.com",
+                // user: process.env.EMAIL_USERNAME,
+                pass: "qcofbnbjhcchccij",
+                // pass: process.env.pass,
             },
         });
 
