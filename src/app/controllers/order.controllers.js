@@ -1,8 +1,9 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { postOrderServices, getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService } = require("../services/OrderServices");
+const { postOrderServices, getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices } = require("../services/OrderServices");
 const OrderModel = require("../models/Order.model");
+const { default: mongoose } = require("mongoose");
 
 // get all Order
 exports.getAllOrder = async (req, res, next) => {
@@ -78,38 +79,104 @@ const generateOrderID = async() => {
 
 
 // post a Order
+// exports.postOrder = async (req, res, next) => {
+//     try {
+//         const data = req.body;
+//         const orderId = await generateOrderID();
+//         const sendData = { ...data, orderId }
+//         if(data.transactionId){
+//             const result = await postOrderWithCardServices(sendData);
+//         if(result){
+//             return sendResponse(res, {
+//                 statusCode: httpStatus.OK,
+//                 success: true,
+//                 message: 'Order Added successfully !',
+//                 data: result,
+//             });
+//         }
+//         throw new ApiError(400, 'Order Added Failed !')
+//         }else{
+//             const result = await postOrderServices(sendData);
+//         if(result){
+//             return sendResponse(res, {
+//                 statusCode: httpStatus.OK,
+//                 success: true,
+//                 message: 'Order Added successfully !',
+//                 data: result,
+//             });
+//         }
+//         throw new ApiError(400, 'Order Added Failed !')
+//         }
+//     } catch (error) {
+//         next(error)
+//     }
+// }
+
 exports.postOrder = async (req, res, next) => {
+    let session;
     try {
+        // Start a MongoDB transaction
+        session = await mongoose.startSession();
+        session.startTransaction();
+
         const data = req.body;
         const orderId = await generateOrderID();
-        const sendData = { ...data, orderId }
-        if(data.transactionId){
-            const result = await postOrderWithCardServices(sendData);
-        if(result){
+        const sendData = { ...data, orderId };
+
+        let result;
+
+        if (data.transactionId) {
+            result = await postCheckOrderWithCardServices(sendData);
+            if(result == 1){
+
+            const result2 = await postOrderWithCardServices(sendData);
+            if(result2){
+                await session.commitTransaction();
+
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
-                message: 'Order Added successfully !',
+                message: 'Order Added successfully!',
                 data: result,
             });
-        }
-        throw new ApiError(400, 'Order Added Failed !')
+            }else{
+                throw new ApiError(400, 'Order confirm failed !');
+            } 
         }else{
-            const result = await postOrderServices(sendData);
-        if(result){
+            throw new ApiError(400, 'Order confirm failed !');
+        }
+        } else {
+            result = await postCheckOrderWithCardServices(sendData);
+            if(result == 1){
+
+            const result2 = await postOrderWithCardServices(sendData);
+            if(result2){
+                await session.commitTransaction();
+
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
-                message: 'Order Added successfully !',
+                message: 'Order Added successfully!',
                 data: result,
             });
+            }else{
+                throw new ApiError(400, 'Order confirm failed !');
+            } 
+        }else{
+            throw new ApiError(400, 'Order confirm failed !');
         }
-        throw new ApiError(400, 'Order Added Failed !')
         }
+        
     } catch (error) {
-        next(error)
+        // Rollback the transaction in case of an error
+        if (session) {
+            await session.abortTransaction();
+            session.endSession();
+        }
+
+        next(error);
     }
-}
+};
 
 // delete A Order item
 exports.deleteAOrderInfo = async (req, res, next) => {
@@ -163,7 +230,7 @@ exports.getTotalOrderInfo = async (req, res, next) => {
             successOrder,
             totalPrice
         }
-        
+
         if (data) {
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
