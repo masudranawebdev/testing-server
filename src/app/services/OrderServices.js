@@ -53,7 +53,8 @@ exports.postOrderWithCardServices = async (data) => {
     const updatedSizeVariations = await Promise.all(updatePromises);
 
     // Return the result
-    return createOrder;
+    // return createOrder;
+    return updatedSizeVariations;
 };
 
 // delete Order
