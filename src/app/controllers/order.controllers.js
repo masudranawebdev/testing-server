@@ -115,8 +115,9 @@ exports.postOrder = async (req, res, next) => {
 exports.deleteAOrderInfo = async (req, res, next) => {
     try {
         const transactionId = req.body.transactionId;
+        const type = req.body.type;
         const status = req.body.status;
-        if(transactionId && status === 'paid'){
+        if(transactionId && type === 'paid' && status == 'pending'){
             throw new ApiError(400, 'You have no access to delete this order !');
         }
         const id = req.body._id;
