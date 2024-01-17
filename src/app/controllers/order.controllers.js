@@ -143,16 +143,13 @@ exports.postOrder = async (req, res, next) => {
                 throw new ApiError(400, 'Order confirm failed !');
             } 
         }else{
-            throw new ApiError(400, 'Order confirm failed !');
+            throw new ApiError(400, 'Not enough quantity !');
         }
         } else {
             result = await postCheckOrderWithCardServices(sendData);
             if(result == 1){
-
-            const result2 = await postOrderWithCardServices(sendData);
+            const result2 = await postOrderServices(sendData);
             if(result2){
-                await session.commitTransaction();
-
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
@@ -163,7 +160,7 @@ exports.postOrder = async (req, res, next) => {
                 throw new ApiError(400, 'Order confirm failed !');
             } 
         }else{
-            throw new ApiError(400, 'Order confirm failed !');
+            throw new ApiError(400, 'Not enough quantity !');
         }
         }
         
