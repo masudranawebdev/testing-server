@@ -43,30 +43,73 @@ exports.getFilterDataControllers = async (req, res, next) => {
 
         const discountFilterData = data.filter(product => product.discount_price !== null);
 
-        if(discount_price == true && sort){
+        if(discount_price == "true" && sort){
             if (sort === 'asc') {
-                sendData = discountFilterData.slice().sort((a, b) => (a.discount_price || 0) - (b.discount_price || 0));
-            } else if (sort === 'des') {
-                sendData = discountFilterData.slice().sort((a, b) => (b.discount_price || 0) - (a.discount_price || 0));
+                const sendData = discountFilterData.slice().sort((a, b) => (a.price || 0) - (b.price || 0));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
+            } else if (sort === 'desc') {
+                const sendData = discountFilterData.slice().sort((a, b) => (b.price || 0) - (a.price || 0));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
             }else{
-                sendData = discountFilterData.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const sendData = discountFilterData.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
             }
         }else if(sort){
             if (sort === 'asc') {
-                sendData = discountFilterData.slice().sort((a, b) => (a.discount_price || 0) - (b.discount_price || 0));
-            } else if (sort === 'des') {
-                sendData = discountFilterData.slice().sort((a, b) => (b.discount_price || 0) - (a.discount_price || 0));
+                const sendData = data.slice().sort((a, b) => (a.price || 0) - (b.price || 0));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
+            } else if (sort === 'desc') {
+                const sendData = data.slice().sort((a, b) => (b.price || 0) - (a.price || 0));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
             }else{
-                sendData = discountFilterData.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const sendData = data.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: sendData
+            });
             }
-        }
-
-        return sendResponse(res, {
+        }else if(discount_price == "true"){
+            return sendResponse(res, {
             statusCode: httpStatus.OK,
             success: true,
             message: 'Product information get successfully !',
-            data: data
+            data: discountFilterData
         });
+        }else{
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Product information get successfully !',
+                data: data
+            });
+        }
 
     } catch (error) {
         next(error)
