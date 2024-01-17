@@ -148,7 +148,7 @@ exports.postOrder = async (req, res, next) => {
         } else {
             result = await postCheckOrderWithCardServices(sendData);
             if(result == 1){
-            const result2 = await postOrderServices(sendData);
+            const result2 = await postOrderWithCardServices(sendData);
             if(result2){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
