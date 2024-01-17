@@ -9,9 +9,13 @@ const { getFilterDataServices } = require("../services/filter.services");
 exports.getFilterDataControllers = async (req, res, next) => {
 
     try {
-        const { discount_price, categoryId, subCategoryId, collectionId, styleId, featureId, colorId, sort } = req.query;
+        const { discount_price, categoryId, subCategoryId, collectionId, styleId, featureId, colorId, sort, menuId } = req.query;
 
         const conditions = {};
+
+        if (menuId) {
+            conditions.menuId = menuId;
+        }
 
         if (categoryId) {
             conditions.categoryId = categoryId;
