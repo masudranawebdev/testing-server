@@ -76,5 +76,5 @@ const OrderModel = mongoose.model("orders", orderSchema);
 module.exports = OrderModel;
 
 // type= paid, unpaid
-// status: pending, success
-// payment type = cardType, cash on delivery
+// status: pending, success initially pending
+// payment type = online, cash on delivery
