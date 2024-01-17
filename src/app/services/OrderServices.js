@@ -21,42 +21,6 @@ exports.postOrderServices = async (data) => {
 }
 
 // Add A Order by card
-// exports.postOrderWithCardServices = async (data) => {
-
-//     const createOrder = await OrderModel.create(data);
-    
-//     if(!createOrder){
-//         throw new ApiError(400, 'Order Added Failed !')
-//     }
-
-//     const { order } = data;
-
-//     const updatePromises = order.map(async (orderItem) => {
-//         const updatedSizeVariation = await ProductModel.findOneAndUpdate(
-//             {
-//                 _id: orderItem.productId,
-//                 'size_variation._id': orderItem.size_variationId,
-//             },
-//             {
-//                 $inc: {
-//                     'size_variation.$.quantity': -1 * orderItem.quantity,
-//                 },
-//             },
-//             {
-//                 new: true,
-//             }
-//         );
-
-//         return updatedSizeVariation;
-//     });
-
-//     // Wait for all updates to complete
-//     const updatedSizeVariations = await Promise.all(updatePromises);
-
-//     // Return the result
-//     // return createOrder;
-//     return updatedSizeVariations;
-// };
 
 exports.postCheckOrderWithCardServices = async (data) => {
     const { order } = data;
