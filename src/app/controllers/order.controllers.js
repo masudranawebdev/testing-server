@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const { postOrderServices, getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices } = require("../services/OrderServices");
+const {getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices, updateOrderService, deleteOrderWithAddQuantityServices } = require("../services/OrderServices");
 const OrderModel = require("../models/Order.model");
 const { default: mongoose } = require("mongoose");
 
@@ -50,7 +50,7 @@ exports.getAOrder = async (req, res, next) => {
 
 // generate order id
 const generateOrderID = async() => {
-    const prefix = 'O'; // You can use any prefix you like
+    const prefix = 0; // You can use any prefix you like
 
     let isUnique = false;
     let uniqueOrderId;
@@ -60,7 +60,7 @@ const generateOrderID = async() => {
         const orderId = total + 1;
 
         // Convert orderId to a 6-character string
-        const paddedOrderId = orderId.toString().padStart(4, '0');
+        const paddedOrderId = orderId.toString().padStart(4, 0);
 
         // Combine the prefix and paddedOrderId
         uniqueOrderId = `${prefix}${paddedOrderId}`;
@@ -77,41 +77,6 @@ const generateOrderID = async() => {
     return uniqueOrderId;
 }
 
-
-// post a Order
-// exports.postOrder = async (req, res, next) => {
-//     try {
-//         const data = req.body;
-//         const orderId = await generateOrderID();
-//         const sendData = { ...data, orderId }
-//         if(data.transactionId){
-//             const result = await postOrderWithCardServices(sendData);
-//         if(result){
-//             return sendResponse(res, {
-//                 statusCode: httpStatus.OK,
-//                 success: true,
-//                 message: 'Order Added successfully !',
-//                 data: result,
-//             });
-//         }
-//         throw new ApiError(400, 'Order Added Failed !')
-//         }else{
-//             const result = await postOrderServices(sendData);
-//         if(result){
-//             return sendResponse(res, {
-//                 statusCode: httpStatus.OK,
-//                 success: true,
-//                 message: 'Order Added successfully !',
-//                 data: result,
-//             });
-//         }
-//         throw new ApiError(400, 'Order Added Failed !')
-//         }
-//     } catch (error) {
-//         next(error)
-//     }
-// }
-
 exports.postOrder = async (req, res, next) => {
     let session;
     try {
@@ -124,9 +89,8 @@ exports.postOrder = async (req, res, next) => {
         const sendData = { ...data, orderId };
 
         let result;
-
-        if (data.transactionId) {
             result = await postCheckOrderWithCardServices(sendData);
+            console.log(result)
             if(result == 1){
 
             const result2 = await postOrderWithCardServices(sendData);
@@ -145,24 +109,6 @@ exports.postOrder = async (req, res, next) => {
         }else{
             throw new ApiError(400, 'Not enough quantity !');
         }
-        } else {
-            result = await postCheckOrderWithCardServices(sendData);
-            if(result == 1){
-            const result2 = await postOrderWithCardServices(sendData);
-            if(result2){
-            return sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Order Added successfully!',
-                data: result,
-            });
-            }else{
-                throw new ApiError(400, 'Order confirm failed !');
-            } 
-        }else{
-            throw new ApiError(400, 'Not enough quantity !');
-        }
-        }
         
     } catch (error) {
         // Rollback the transaction in case of an error
@@ -178,23 +124,30 @@ exports.postOrder = async (req, res, next) => {
 // delete A Order item
 exports.deleteAOrderInfo = async (req, res, next) => {
     try {
-        const transactionId = req.body.transactionId;
-        const type = req.body.type;
-        const status = req.body.status;
-        if(transactionId && type === 'paid' && status == 'pending'){
-            throw new ApiError(400, 'You have no access to delete this order !');
-        }
-        const id = req.body._id;
-        const result = await deleteOrderWithOutCardServices(id);
-        if (result?.deletedCount > 0) {
-            sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Order Delete successfully !'
-            });
-        } else {
-            throw new ApiError(400, 'Order delete failed !');
-        }
+            const type = req.body.type;
+            const status = req.body.status;
+            if(type === 'unpaid' && status == 'pending'){
+                const order = req.body.allData?.order;
+                const orderQuantityUpdate = deleteOrderWithAddQuantityServices(order)
+                if(orderQuantityUpdate){
+                    const id = req.body._id;
+                    const result = await deleteOrderWithOutCardServices(id);
+                    if (result?.deletedCount > 0) {
+                        sendResponse(res, {
+                        statusCode: httpStatus.OK,
+                        success: true,
+                        message: 'Order Delete successfully !'
+                        });
+                    } else {
+                        throw new ApiError(400, 'Order delete failed !');
+                    }
+                }else{
+                    throw new ApiError(400, 'Something went wrong !');
+                }
+            }else{
+                throw new ApiError(400, 'You have no access to delete this order !');
+            }
+        
     } catch (error) {
         next(error);
     }
@@ -258,6 +211,25 @@ exports.getSearchOrderInfo = async (req, res, next) => {
             });
         }
         throw new ApiError(400, 'Order get failed !');
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update a order
+exports.UpdateAOrderInfo = async (req, res, next) => {
+    try {
+        const id = req.body._id;
+        const result = await updateOrderService(id);
+        if (result?.modifiedCount > 0) {
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Order Update successfully !'
+            });
+        } else {
+            throw new ApiError(400, 'Order Update failed !');
+        }
     } catch (error) {
         next(error);
     }

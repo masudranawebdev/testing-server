@@ -14,12 +14,6 @@ exports.getAOrderService = async (email) => {
     return getAOrderData;
 }
 
-// Add A Order
-exports.postOrderServices = async (data) => {
-    const createOrder = await OrderModel.create(data);
-    return createOrder;
-}
-
 // Add A Order by card
 
 exports.postCheckOrderWithCardServices = async (data) => {
@@ -90,6 +84,34 @@ exports.postOrderWithCardServices = async (data) => {
     return updatedSizeVariations;
 }
 
+// delete order but first add quantity
+exports.deleteOrderWithAddQuantityServices = async (order) => {
+
+    const updatePromises = order.map(async (orderItem) => {
+    const updatedSizeVariation = await ProductModel.findOneAndUpdate(
+            {
+                _id: orderItem.productId,
+                'size_variation._id': orderItem.size_variationId,
+            },
+            {
+                $inc: {
+                    'size_variation.$.quantity': orderItem.quantity,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+
+            return updatedSizeVariation;
+        });
+    // Wait for all updates to complete
+    const updatedSizeVariations = await Promise.all(updatePromises);
+
+    return updatedSizeVariations;
+}
+
+
 // delete Order
 exports.deleteOrderWithOutCardServices = async (id) => {
     const order = await OrderModel.deleteOne({ _id: id });
@@ -108,32 +130,10 @@ exports.getSearchOrderService = async (searchData) => {
     return order;
 }
 
-// Delete a Order
-// exports.deleteOrderWithOutCardServices = async (data) => {
-
-//     const { productId, order } = data;
-
-//     const deletePromises = order.map(async (orderItem) => {
-//         const deletedSizeVariation = await ProductModel.findOneAndUpdate(
-//             {
-//                 _id: productId,
-//             },
-//             {
-//                 $pull: {
-//                     'size_variation': { _id: orderItem.size_variation },
-//                 },
-//             },
-//             {
-//                 new: true,
-//             }
-//         );
-
-//         return deletedSizeVariation;
-//     });
-
-//     // Wait for all deletions to complete
-//     const deletedSizeVariations = await Promise.all(deletePromises);
-
-//     // Return the result
-//     return deletedSizeVariations;
-// };
+// update Order
+exports.updateOrderService = async (id) => {
+    const updateCompleteOrderInfo = await OrderModel.findOne({_id: id})
+    const completeOrderUpdate = await OrderModel.updateOne(updateCompleteOrderInfo, {type: 'paid', status: 'complete'}, {
+    runValidators: true });
+    return completeOrderUpdate;
+}
