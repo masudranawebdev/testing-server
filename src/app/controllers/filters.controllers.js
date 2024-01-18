@@ -15,9 +15,13 @@ exports.getFilterDataControllers = async (req, res, next) => {
 
     try {
 
-        const {gender, category, sub_category, style, color, feature, collection, discount_price, sort} = req.query;
+        const {gender, category, sub_category, style, color, feature, collection, discount_price, sort, keyword} = req.query;
 
         const conditions = {};
+
+        if (keyword) {
+            conditions.title = { $regex: keyword, $options: 'i' };
+        }
 
         if (gender) {
             const menuId = await MenuModel.findOne({slug: gender}).select('_id');
