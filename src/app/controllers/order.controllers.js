@@ -160,7 +160,7 @@ exports.getTotalOrderInfo = async (req, res, next) => {
         const totalOrder = await OrderModel.countDocuments();
         const pendingData = data.filter(item => item.status === 'pending');
         const pendingOrder = pendingData.length;
-        const successData = data.filter(item => item.status === 'success');
+        const successData = data.filter(item => item.status === 'complete');
         const successOrder = successData.length;
 
         // Initialize total price

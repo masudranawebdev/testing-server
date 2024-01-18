@@ -13,6 +13,7 @@ const SliderRoutes = require('../app/routes/slider.routes');
 const ProductRoutes = require('../app/routes/product.routes');
 const OrderRoutes = require('../app/routes/order.routes');
 const FilterRoutes = require('../app/routes/filter.routes');
+const SettingRoutes = require('../app/routes/setting.routes');
 
 const router = express.Router();
 
@@ -72,6 +73,10 @@ const moduleRoutes = [
   {
     path: '/all',
     route: FilterRoutes.router,
+  },
+  {
+    path: '/siteSetting',
+    route: SettingRoutes.router,
   },
 ];
 
