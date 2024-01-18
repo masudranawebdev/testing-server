@@ -30,6 +30,9 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    shipping_price: {
+        type: Number
+    },
     order: [
         {
             productId: {

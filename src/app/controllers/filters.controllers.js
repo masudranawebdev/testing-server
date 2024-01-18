@@ -1,44 +1,57 @@
 
-const dotenv = require("dotenv").config();
 const sendResponse = require('../../shared/send.response');
 const httpStatus = require('http-status');
-const ApiError = require('../../errors/ApiError');
 const { getFilterDataServices } = require("../services/filter.services");
+const MenuModel = require("../models/Menu.model");
+const CategoryModel = require("../models/Category.model");
+const Sub_CategoryModel = require("../models/Sub.category.model");
+const CollectionModel = require("../models/Collection.model");
+const StyleModel = require("../models/Style.model");
+const FeatureModel = require("../models/Feature.model");
+const ColorModel = require("../models/Color.model");
 
 // get filter data
 exports.getFilterDataControllers = async (req, res, next) => {
 
     try {
-        const { discount_price, categoryId, subCategoryId, collectionId, styleId, featureId, colorId, sort, menuId } = req.query;
+
+        const {gender, category, sub_category, style, color, feature, collection, discount_price, sort} = req.query;
 
         const conditions = {};
 
-        if (menuId) {
-            conditions.menuId = menuId;
+        if (gender) {
+            const menuId = await MenuModel.findOne({slug: gender}).select('_id');
+            conditions.menuId = menuId?._id.toString();
         }
 
-        if (categoryId) {
-            conditions.categoryId = categoryId;
+        if (category) {
+            const categoryId = await CategoryModel.findOne({slug: category}).select('_id');
+            conditions.categoryId = categoryId?._id.toString();
         }
 
-        if (subCategoryId) {
-            conditions.subCategoryId = subCategoryId;
+        if (sub_category) {
+            const subCategoryId = await Sub_CategoryModel.findOne({slug: sub_category}).select('_id');
+            conditions.subCategoryId = subCategoryId?._id.toString();
         }
 
-        if (collectionId) {
-            conditions.collectionId = collectionId;
+        if (collection) {
+            const collectionId = await CollectionModel.findOne({slug: collection}).select('_id');
+            conditions.collectionId = collectionId?._id.toString();
         }
 
-        if (styleId) {
-            conditions.styleId = styleId;
+        if (style) {
+            const styleId = await StyleModel.findOne({slug: style}).select('_id');
+            conditions.styleId = styleId?._id.toString();
         }
 
-        if (featureId) {
-            conditions.featureId = featureId;
+        if (feature) {
+            const featureId = await FeatureModel.findOne({slug: feature}).select('_id');
+            conditions.featureId = featureId?._id.toString();
         }
 
-        if (colorId) {
-            conditions.colorId = colorId;
+        if (color) {
+            const colorId = await ColorModel.findOne({slug: color}).select('_id');
+            conditions.colorId = colorId?._id.toString();
         }
 
         const query = conditions;

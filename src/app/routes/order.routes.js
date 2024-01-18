@@ -1,9 +1,9 @@
 const express = require("express");
-const { postOrder, getAllOrder, getAOrder, deleteAOrderInfo, getSearchOrderInfo, getTotalOrderInfo } = require("../controllers/order.controllers");
+const { postOrder, getAllOrder, getAOrder, deleteAOrderInfo, getSearchOrderInfo, getTotalOrderInfo, UpdateAOrderInfo } = require("../controllers/order.controllers");
 const router = express.Router();
 
 // get post delete and update Order Item
-router.route('/').get(getAllOrder).post(postOrder).delete(deleteAOrderInfo);
+router.route('/').get(getAllOrder).post(postOrder).delete(deleteAOrderInfo).patch(UpdateAOrderInfo)
 
 // get search Order
 router.route('/totalOrder').get(getTotalOrderInfo)
