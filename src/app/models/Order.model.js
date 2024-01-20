@@ -33,6 +33,9 @@ const orderSchema = new mongoose.Schema({
     shipping_price: {
         type: Number
     },
+    totalPrice: {
+        type: Number
+    },
     order: [
         {
             productId: {

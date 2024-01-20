@@ -1,9 +1,14 @@
 const httpStatus = require("http-status");
 const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
-const {getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices, updateOrderService, deleteOrderWithAddQuantityServices } = require("../services/OrderServices");
+const {getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices, updateOrderService, deleteOrderWithAddQuantityServices, postInitialOrderServices, postOrderWithCODServices, updateOrderPaymentSuccessService, deleteOrderPaymentFailService, getAOrderTNXIDService } = require("../services/OrderServices");
 const OrderModel = require("../models/Order.model");
 const { default: mongoose } = require("mongoose");
+const SSLCommerzPayment = require('sslcommerz-lts');
+const { ObjectId } = require("mongodb");
+const store_id = 'class65a7c35cefd5b'
+const store_passwd = 'class65a7c35cefd5b@ssl'
+const is_live = false //true for live, false for sandbox
 
 // get all Order
 exports.getAllOrder = async (req, res, next) => {
@@ -77,49 +82,153 @@ const generateOrderID = async() => {
     return uniqueOrderId;
 }
 
-exports.postOrder = async (req, res, next) => {
-    let session;
-    try {
-        // Start a MongoDB transaction
-        session = await mongoose.startSession();
-        session.startTransaction();
+// generate trnx id
+const generateTRNXID = async() => {
 
-        const data = req.body;
+    let isUnique = false;
+    let transactionId;
+
+    while (!isUnique) {
+
+        transactionId = new ObjectId().toString();
+
+        // Check if the generated ID is unique
+        const existingOrder = await OrderModel.findOne({ transactionId: transactionId });
+
+        // If no existing order found, mark the ID as unique
+        if (!existingOrder) {
+            isUnique = true;
+        }
+    }
+
+    return transactionId;
+}
+
+exports.postOrder = async (req, res, next) => {
+    try {
+        const SSLData = req.body;
         const orderId = await generateOrderID();
-        const sendData = { ...data, orderId };
 
         let result;
-            result = await postCheckOrderWithCardServices(sendData);
-            console.log(result)
-            if(result == 1){
+            result = await postCheckOrderWithCardServices(SSLData);
 
-            const result2 = await postOrderWithCardServices(sendData);
+            if(result == 0){
+                throw new ApiError(400, 'Not enough quantity !');
+            }
+
+            if(result == 1 && SSLData?.payment_type == 'online'){
+                const transactionId = await generateTRNXID();
+                const sendData = {...SSLData, orderId, transactionId}
+                sendData.status = 'pending';
+                sendData.type = 'unpaid';
+                sendData.totalPrice = sendData.price;
+                delete sendData.name;
+                delete sendData.price;
+                delete sendData.address;
+                delete sendData.city;
+                delete sendData.zip_code;
+                delete sendData.country;
+                const initialOrder = await postInitialOrderServices(sendData)
+                if(initialOrder){
+                const data = {
+                    total_amount: SSLData?.price,
+                    currency: 'BDT',
+                    tran_id: transactionId, // use unique tran_id for each api call
+                    success_url: `http://localhost:5000/api/v1/order/payment-success/${transactionId}`,
+                    fail_url: `http://localhost:5000/api/v1/order/payment-fail/${transactionId}`,
+                    cancel_url: 'http://localhost:3000/checkout',
+                    ipn_url: 'http://localhost:3030/ipn',
+                    shipping_method: SSLData?.payment_type,
+                    product_name: 'Default.',
+                    product_category: 'Default',
+                    product_profile: 'Default',
+                    cus_name: SSLData?.name,
+                    cus_email: SSLData?.email,
+                    cus_add1: SSLData?.address,
+                    cus_city: SSLData?.city,
+                    cus_postcode: SSLData?.zip_code || "Default",
+                    cus_country: SSLData?.country,
+                    cus_phone: SSLData?.phone,
+                    ship_name: 'Default',
+                    ship_add1: 'Default',
+                    ship_city: 'Default',
+                    ship_postcode: "Default",
+                    ship_country: 'Bangladesh',
+                };
+                const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live)
+                sslcz.init(data).then(apiResponse => {
+                    const GatewayPageURL = apiResponse.GatewayPageURL;
+                    return sendResponse(res, {
+                        statusCode: httpStatus.OK,
+                        success: true,
+                        message: 'Order Added successfully!',
+                        data: {GatewayPageURL: GatewayPageURL},
+                    });
+                });
+
+            }else{
+                    throw new ApiError(400, 'Order confirm failed !');
+            }
+        }else{
+            const transactionId = await generateTRNXID();
+                const sendData = {...SSLData, orderId, transactionId}
+                sendData.status = 'pending';
+                sendData.type = 'unpaid';
+                sendData.totalPrice = sendData.price;
+                delete sendData.name;
+                delete sendData.price;
+                delete sendData.address;
+                delete sendData.city;
+                delete sendData.zip_code;
+                delete sendData.country;
+            const result2 = await postOrderWithCODServices(sendData);
             if(result2){
-                await session.commitTransaction();
-
-            return sendResponse(res, {
-                statusCode: httpStatus.OK,
-                success: true,
-                message: 'Order Added successfully!',
-                data: result,
-            });
+            return res.redirect(`http://localhost:3000/payment-fail/${transactionId}`)
             }else{
                 throw new ApiError(400, 'Order confirm failed !');
-            } 
-        }else{
-            throw new ApiError(400, 'Not enough quantity !');
+            }
         }
         
     } catch (error) {
-        // Rollback the transaction in case of an error
-        if (session) {
-            await session.abortTransaction();
-            session.endSession();
-        }
-
         next(error);
     }
 };
+
+// Payment success
+exports.postPaymentSuccessOrderInfo = async (req, res, next) => {
+    try {
+        const transactionId = req.params.transactionId;
+        const findOrder = await getAOrderTNXIDService(transactionId);
+        const result2 = await postOrderWithCardServices(findOrder);
+            if(result2){
+                const result = await updateOrderPaymentSuccessService(transactionId);
+                if (result?.modifiedCount > 0) {
+                    return res.redirect(`http://localhost:3000/payment-success/${transactionId}`)
+                } else {
+                    throw new ApiError(400, 'Order Update failed !');
+                }
+            }else{
+                throw new ApiError(400, 'Order confirm failed !');
+            } 
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Payment fail
+exports.postPaymentFailOrderInfo = async (req, res, next) => {
+    try {
+        const transactionId = req.params.transactionId
+        const result = await deleteOrderPaymentFailService(transactionId);
+        if (result?.deletedCount > 0) {
+            return res.redirect(`http://localhost:3000/payment-fail/${transactionId}`)
+        } else {
+            throw new ApiError(400, 'Order delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+}
 
 // delete A Order item
 exports.deleteAOrderInfo = async (req, res, next) => {
