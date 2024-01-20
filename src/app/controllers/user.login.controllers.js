@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs")
 const saltRounds = 10
 const dotenv = require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { findUser, updateLogUsersNewPasswordService } = require("../services/user.login.services");
+const { findUser, updateLogUsersNewPasswordService, updateLogUsersChangeNewPasswordService } = require("../services/user.login.services");
 const sendResponse = require("../../shared/send.response");
 const httpStatus = require("http-status");
 const ApiError = require("../../errors/ApiError");
@@ -33,6 +33,49 @@ exports.postLogUser = async (req, res, next) => {
                     statusCode: httpStatus.BAD_REQUEST,
                     success: false,
                     message: 'Password not match !'
+                });
+            }
+    
+
+        } else {
+            throw new ApiError(400, 'User not found !')
+        }
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+// change a user password
+exports.updateChangePasswordUser = async (req, res, next) => {
+    try {
+        const { email, current_password, new_password } = req.body;
+        const user = await findUser(email)
+        if (user) {
+            if(user?.verify == false){
+                throw new ApiError(400, 'Need verify !')
+            }
+            const isPasswordValid = await bcrypt.compare(current_password, user?.password);
+
+            if (isPasswordValid) {
+                bcrypt.hash(new_password, saltRounds, async function (err, hash) {
+                    const updatePassword = await updateLogUsersChangeNewPasswordService(email, hash);
+                        if(updatePassword.modifiedCount > 0){
+                            return sendResponse(res, {
+                                statusCode: httpStatus.OK,
+                                success: true,
+                                message: 'Password update successfully !'
+                            });
+                        }else{
+                            throw new ApiError(400, 'Something went wrong !')
+                        }
+
+                });
+            } else {
+                return sendResponse(res, {
+                    statusCode: httpStatus.BAD_REQUEST,
+                    success: false,
+                    message: 'Current Password not match !'
                 });
             }
     
