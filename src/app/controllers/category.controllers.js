@@ -88,7 +88,7 @@ exports.updateCategoryInfo = async (req, res, next) => {
             const sendData = { ...data, category_image }
             const result= await updateCategoryServices(sendData);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Category update successfully !'
@@ -99,7 +99,7 @@ exports.updateCategoryInfo = async (req, res, next) => {
         }else{
         const result= await updateCategoryServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Category update successfully !'
@@ -128,7 +128,7 @@ exports.deleteACategoryInfo = async (req, res, next) => {
         }
         const result = await deleteCategoryServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Category Delete successfully !'

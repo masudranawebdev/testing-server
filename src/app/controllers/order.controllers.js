@@ -133,7 +133,7 @@ exports.deleteAOrderInfo = async (req, res, next) => {
                     const id = req.body._id;
                     const result = await deleteOrderWithOutCardServices(id);
                     if (result?.deletedCount > 0) {
-                        sendResponse(res, {
+                        return sendResponse(res, {
                         statusCode: httpStatus.OK,
                         success: true,
                         message: 'Order Delete successfully !'
@@ -222,7 +222,7 @@ exports.UpdateAOrderInfo = async (req, res, next) => {
         const id = req.body._id;
         const result = await updateOrderService(id);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Order Update successfully !'
