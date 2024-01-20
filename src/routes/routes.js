@@ -14,10 +14,15 @@ const ProductRoutes = require('../app/routes/product.routes');
 const OrderRoutes = require('../app/routes/order.routes');
 const FilterRoutes = require('../app/routes/filter.routes');
 const SettingRoutes = require('../app/routes/setting.routes');
+const DashboardRoutes = require('../app/routes/dashboard.routes');
 
 const router = express.Router();
 
 const moduleRoutes = [
+  {
+    path: '/dashboard',
+    route: DashboardRoutes.router,
+  },
   {
     path: '/userReg',
     route: UserRegRoutes.router,
@@ -78,6 +83,7 @@ const moduleRoutes = [
     path: '/siteSetting',
     route: SettingRoutes.router,
   },
+  
 ];
 
 moduleRoutes.forEach(route => router.use(route.path, route.route));
