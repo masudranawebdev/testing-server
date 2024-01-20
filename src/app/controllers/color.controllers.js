@@ -54,7 +54,7 @@ exports.deleteAColorInfo = async (req, res, next) => {
         }
         const result = await deleteColorServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Color Delete successfully !'
@@ -77,7 +77,7 @@ exports.updateAColorInfo = async (req, res, next) => {
         }
         const result = await updateColorServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Color Update successfully !'

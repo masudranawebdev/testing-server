@@ -54,7 +54,7 @@ exports.postRegUser = async (req, res, next) => {
             try {
                 const result = await postRegUserServices(newUser);
                 await SendOTP(result?.otp, result?.email);
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'Check your email !',
@@ -82,7 +82,7 @@ exports.postRegUserAccountVerify = async (req, res, next) => {
         if (data?.otp == otp) {
             const userVerify = await updateUserVerificationServices(user?._id);
             if (userVerify?.modifiedCount > 0) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'OTP match successfully !'
@@ -91,7 +91,7 @@ exports.postRegUserAccountVerify = async (req, res, next) => {
                 throw new ApiError(400, 'Something went wrong !')
             }
         } else {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.BAD_REQUEST,
                 success: false,
                 message: 'OTP match failed !'
@@ -116,7 +116,7 @@ exports.postRegUserResendCode = async (req, res, next) => {
         if (updateOTP?.modifiedCount > 0) {
             const newOtp = await checkAUserExits(email);
             await SendOTP(newOtp?.otp, email);
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'New OTP send !',
@@ -136,7 +136,7 @@ exports.deleteAUser = async (req, res, next) => {
         const data = req.body;
             const userDelete = await deleteUserServices(data?._id);
             if (userDelete?.deletedCount > 0) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'User delete successfully !'

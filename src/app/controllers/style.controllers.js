@@ -54,7 +54,7 @@ exports.deleteAStyleInfo = async (req, res, next) => {
         }
         const result = await deleteStyleServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Style Delete successfully !'
@@ -77,7 +77,7 @@ exports.updateAStyleInfo = async (req, res, next) => {
         }
         const result = await updateStyleServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Style Update successfully !'

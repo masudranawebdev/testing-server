@@ -72,7 +72,7 @@ exports.updateProductInfo = async (req, res, next) => {
         const data = req.body;
         const result= await updateProductServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Product update successfully !'
@@ -92,7 +92,7 @@ exports.deleteAProductInfo = async (req, res, next) => {
         const id = req.body._id;
         const result = await deleteProductServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Product Delete successfully !'

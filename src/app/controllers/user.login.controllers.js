@@ -29,7 +29,7 @@ exports.postLogUser = async (req, res, next) => {
                     data: {token}
                 });
             } else {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.BAD_REQUEST,
                     success: false,
                     message: 'Password not match !'
@@ -58,7 +58,7 @@ exports.postForgotPasswordUser = async (req, res, next) => {
 
         await SendForgetPasswordLink(user?.email);
 
-        sendResponse(res, {
+        return sendResponse(res, {
             statusCode: httpStatus.OK,
             success: true,
             message: 'Check Your Email !',
@@ -78,7 +78,7 @@ exports.postNewPasswordUser = async (req, res, next) => {
         bcrypt.hash(password, saltRounds, async function (err, hash) {
             const users = await updateLogUsersNewPasswordService(email, hash);
             if (users?.modifiedCount > 0) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'Password change successfully !'
