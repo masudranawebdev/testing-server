@@ -183,7 +183,12 @@ exports.postOrder = async (req, res, next) => {
                 delete sendData.country;
             const result2 = await postOrderWithCODServices(sendData);
             if(result2){
-            return res.redirect(`http://localhost:3000/payment-fail/${transactionId}`)
+            return sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: 'Order Found successfully !',
+                data: result2
+            });
             }else{
                 throw new ApiError(400, 'Order confirm failed !');
             }
