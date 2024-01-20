@@ -61,7 +61,7 @@ exports.updateSliderInfo = async (req, res, next) => {
             const sendData = { ...data, slider }
             const result= await updateSliderServices(sendData);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Slider update successfully !'
@@ -73,7 +73,7 @@ exports.updateSliderInfo = async (req, res, next) => {
         else{
             const result= await updateSliderServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Slider update successfully !'
@@ -94,7 +94,7 @@ exports.deleteASliderInfo = async (req, res, next) => {
         const id = req.body._id;
         const result = await deleteSliderServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Slider Delete successfully !'

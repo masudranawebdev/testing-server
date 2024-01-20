@@ -60,7 +60,7 @@ exports.updateUserInfo = async (req, res, next) => {
         const data = req.body;
         const result = await updateUserInfoService(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'User information update successfully !'

@@ -69,7 +69,7 @@ exports.updateCollectionInfo = async (req, res, next) => {
             const sendData = { ...data, collection_image }
             const result= await updateCollectionServices(sendData);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Sub_Category update successfully !'
@@ -81,7 +81,7 @@ exports.updateCollectionInfo = async (req, res, next) => {
         else{
             const result= await updateCollectionServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Sub_Category update successfully !'
@@ -106,7 +106,7 @@ exports.deleteACollectionInfo = async (req, res, next) => {
         }
         const result = await deleteCollectionServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Collection Delete successfully !'

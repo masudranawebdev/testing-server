@@ -8,7 +8,7 @@ exports.getSiteSettingInfo = async (req, res, next) => {
     try {
             const result = await getSiteSettingServices();
             if (result ) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'Setting Get successfully !',
@@ -29,7 +29,7 @@ exports.updateSiteSettingInfo = async (req, res, next) => {
         if(data?._id){
             const result = await updateSiteSettingServices(data);
             if (result?.modifiedCount ) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'Setting Update successfully !'
@@ -40,7 +40,7 @@ exports.updateSiteSettingInfo = async (req, res, next) => {
         }else{
             const result = await postSiteSettingServices(data);
             if (result) {
-                sendResponse(res, {
+                return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
                     message: 'Setting Update successfully !'

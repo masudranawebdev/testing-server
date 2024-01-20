@@ -62,7 +62,7 @@ exports.deleteAMenuInfo = async (req, res, next) => {
         }
         const result = await deleteMenuServices(id);
         if (result?.deletedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Menu Delete successfully !'
@@ -85,7 +85,7 @@ exports.updateAMenuInfo = async (req, res, next) => {
         }
         const result = await updateMenuServices(data);
         if (result?.modifiedCount > 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
                 message: 'Menu Update successfully !'
