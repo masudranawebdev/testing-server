@@ -10,7 +10,7 @@ exports.getAllOrderService = async (limit, skip) => {
 
 // Find A Order
 exports.getAOrderService = async (email) => {
-    const getAOrderData = await OrderModel.findOne({email: email}).populate('userInfo')
+    const getAOrderData = await OrderModel.find({email: email}).populate('userInfo')
     return getAOrderData;
 }
 
