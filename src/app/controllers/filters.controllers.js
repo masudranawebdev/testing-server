@@ -14,7 +14,6 @@ const ColorModel = require("../models/Color.model");
 exports.getFilterDataControllers = async (req, res, next) => {
 
     try {
-
         const {gender, category, sub_category, style, color, feature, collection, discount_price, sort, keyword} = req.query;
 
         const conditions = {};
@@ -33,8 +32,23 @@ exports.getFilterDataControllers = async (req, res, next) => {
             conditions.categoryId = categoryId?._id.toString();
         }
 
+        if (category && gender) {
+            const categoryId = await CategoryModel.findOne({slug: category, menuId: conditions.menuId}).select('_id');
+            conditions.categoryId = categoryId?._id.toString();
+        }
+
         if (sub_category) {
             const subCategoryId = await Sub_CategoryModel.findOne({slug: sub_category}).select('_id');
+            conditions.subCategoryId = subCategoryId?._id.toString();
+        }
+
+        if (sub_category && category) {
+            const subCategoryId = await Sub_CategoryModel.findOne({slug: sub_category, categoryId: conditions.categoryId}).select('_id');
+            conditions.subCategoryId = subCategoryId?._id.toString();
+        }
+
+        if (sub_category && category && gender) {
+            const subCategoryId = await Sub_CategoryModel.findOne({slug: sub_category, categoryId: conditions.categoryId, menuId: conditions.menuId}).select('_id');
             conditions.subCategoryId = subCategoryId?._id.toString();
         }
 
