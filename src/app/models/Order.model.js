@@ -31,7 +31,12 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     shipping_price: {
-        type: Number
+        type: Number,
+        required: true
+    },
+    shipping_type: {
+        type: String,
+        required: true
     },
     totalPrice: {
         type: Number
