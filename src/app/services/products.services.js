@@ -22,7 +22,7 @@ exports.postProductServices = async (data) => {
 exports.updateProductServices = async(data) =>{
     const updateProductInfo = await ProductModel.findOne({_id: data?._id})
     const product = await ProductModel.updateOne(updateProductInfo, data, {
-    runValidators: true });
+        runValidators: true });
     return product;
 }
 
@@ -36,7 +36,7 @@ exports.deleteProductServices = async (id) => {
 
 // rtelated product
 exports.getRelatedProductService = async (related) => {
-    const product = await ProductModel.find({ related: related });
+    const product = await ProductModel.find({ related: related }).populate(['menuId', 'categoryId', 'collectionId', 'colorId', 'featureId', 'styleId', 'subCategoryId']);
     return product;
 }
 

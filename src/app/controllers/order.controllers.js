@@ -136,7 +136,7 @@ exports.postOrder = async (req, res, next) => {
                     tran_id: transactionId, // use unique tran_id for each api call
                     success_url: `http://localhost:5000/api/v1/order/payment-success/${transactionId}`,
                     fail_url: `http://localhost:5000/api/v1/order/payment-fail/${transactionId}`,
-                    cancel_url: 'http://localhost:3000/checkout',
+                    cancel_url: `http://localhost:5000/api/v1/order/payment-cancel/${transactionId}`,
                     ipn_url: 'http://localhost:3030/ipn',
                     shipping_method: SSLData?.payment_type,
                     product_name: 'Default.',
@@ -229,6 +229,21 @@ exports.postPaymentFailOrderInfo = async (req, res, next) => {
             return res.redirect(`http://localhost:3000/payment-fail/${transactionId}`)
         } else {
             throw new ApiError(400, 'Order delete failed !');
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Payment Cancel
+exports.postPaymentCancelOrderInfo = async (req, res, next) => {
+    try {
+        const transactionId = req.params.transactionId
+        const result = await deleteOrderPaymentFailService(transactionId);
+        if (result?.deletedCount > 0) {
+            return res.redirect(`http://localhost:3000/checkout`)
+        } else {
+            throw new ApiError(400, 'Order delete Canceled !');
         }
     } catch (error) {
         next(error);
