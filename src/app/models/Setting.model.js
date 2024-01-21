@@ -47,6 +47,9 @@ const settingSchema = new mongoose.Schema({
     shipping_info: {
         type: String
     },
+    material_care: {
+        type: String
+    },
 },
 {
     timestamps: true

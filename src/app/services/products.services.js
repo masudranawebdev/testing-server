@@ -34,6 +34,12 @@ exports.deleteProductServices = async (id) => {
     return product;
 };
 
+// rtelated product
+exports.getRelatedProductService = async (related) => {
+    const product = await ProductModel.find({ related: related });
+    return product;
+}
+
 // search product
 exports.getSearchProductService = async (searchData) => {
     const product = await ProductModel.find({ title: searchData });
