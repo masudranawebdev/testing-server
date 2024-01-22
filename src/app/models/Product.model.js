@@ -57,6 +57,9 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    product_video: {
+        type: String
+    },
     images: [
         {
             image: String

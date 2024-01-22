@@ -187,12 +187,12 @@ exports.postOrder = async (req, res, next) => {
                 delete sendData.city;
                 delete sendData.zip_code;
                 delete sendData.country;
-            const result2 = await postOrderWithCODServices(sendData);
+                const result2 = await postOrderWithCODServices(sendData);
             if(result2){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
-                message: 'Order Found successfully !',
+                message: 'Order Confirm successfully !',
                 data: result2
             });
             }else{

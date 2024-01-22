@@ -8,6 +8,7 @@ const { SendOTP } = require("../../middleware/sendOTP");
 const UserModel = require("../models/User.model");
 const saltRounds = 10;
 
+
 // get all user
 exports.getAllUser = async (req, res, next) => {
     try {
@@ -31,6 +32,7 @@ exports.getAllUser = async (req, res, next) => {
         next(error)
     }
 }
+
 
 // registration a user
 exports.postRegUser = async (req, res, next) => {
