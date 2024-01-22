@@ -22,7 +22,7 @@ exports.postColorServices = async (data) => {
 
 // Find A Color is Exist in a product ?
 exports.checkAColorExitsInProduct = async (color) => {
-    const FindColor = await ProductModel.findOne({ colorId: color });
+    const FindColor = await ProductModel.find({ colorId: color });
     return FindColor;
 }
 
