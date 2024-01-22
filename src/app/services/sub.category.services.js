@@ -37,7 +37,7 @@ exports.updateSub_CategoryServices = async(data) =>{
 
 // Find A SubCategory is Exist in products ?
 exports.checkASubCategoryExitsInProducts = async (id) => {
-    const FindSubCategory = await ProductModel.find({ sub_categoryId: id });
+    const FindSubCategory = await ProductModel.find({ subCategoryId: id });
     return FindSubCategory;
 }
 

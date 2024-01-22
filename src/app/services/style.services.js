@@ -35,7 +35,7 @@ exports.deleteStyleServices = async (id) => {
 
 // Check A Style when it is update exist in products
 exports.checkAStyleExitsInProductWhenUpdate = async (style) => {
-    const checkStyle = await StyleModel.find({style: style});
+    const checkStyle = await StyleModel.findOne({style: style});
     return checkStyle;
 }
 

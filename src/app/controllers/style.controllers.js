@@ -72,7 +72,7 @@ exports.updateAStyleInfo = async (req, res, next) => {
     try {
         const data = req.body;
         const checkExist = await checkAStyleExitsInProductWhenUpdate(data?.style);
-        if(checkExist.length > 0 ){
+        if(checkExist ){
             throw new ApiError(400, 'Previously Added !')
         }
         const result = await updateStyleServices(data);
