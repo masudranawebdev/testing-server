@@ -36,8 +36,8 @@ exports.getAllOrder = async (req, res, next) => {
 // get a Order
 exports.getAOrder = async (req, res, next) => {
     try {
-        const email = req.params.email;
-        const result = await getAOrderService(email);
+        const users = req.params.users;
+        const result = await getAOrderService(users);
         if(result){
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
@@ -139,7 +139,7 @@ exports.postOrder = async (req, res, next) => {
                     product_category: 'Default',
                     product_profile: 'Default',
                     cus_name: SSLData?.name,
-                    cus_email: SSLData?.email || "Default Email",
+                    cus_email: "Default Email",
                     cus_add1: SSLData?.address,
                     cus_city: SSLData?.city || "Default",
                     cus_postcode: SSLData?.zip_code || "Default",

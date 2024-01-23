@@ -9,8 +9,8 @@ exports.getAllOrderService = async (limit, skip) => {
 }
 
 // Find A Order
-exports.getAOrderService = async (email) => {
-    const getAOrderData = await OrderModel.find({email: email}).populate('userInfo')
+exports.getAOrderService = async (phone) => {
+    const getAOrderData = await OrderModel.find({phone: phone}).populate('userInfo')
     return getAOrderData;
 }
 
@@ -183,7 +183,7 @@ exports.getAllOrderInfoService = async () => {
 
 // search Order
 exports.getSearchOrderService = async (searchData) => {
-    const order = await OrderModel.find({ email: searchData }).populate('userInfo');
+    const order = await OrderModel.find({ phone: searchData }).populate('userInfo');
     return order;
 }
 

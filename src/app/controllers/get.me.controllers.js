@@ -14,7 +14,7 @@ exports.getMeUser = async (req, res, next) => {
         const decode = await promisify(jwt.verify)(token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hem11bEBnbWFpbC5jb20iLCJpYXQiOjE2OTQ0MzExOTF9.xtLPsJrvJ0Gtr4rsnHh1kok51_pU10_hYLilZyBiRAM");
         // const decode = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN);
 
-        const user = await findUserInfoServices(decode.email);
+        const user = await findUserInfoServices(decode.phone);
 
         if (user) {
             return sendResponse(res, {
@@ -35,9 +35,9 @@ exports.getMeUser = async (req, res, next) => {
 exports.getUserInformation = async (req, res, next) => {
     try {
 
-        const email = req.params.email;
+        const phone = req.params.phone;
 
-        const user= await findUserInfoServices(email);
+        const user= await findUserInfoServices(phone);
 
         if (user) {
             return sendResponse(res, {
