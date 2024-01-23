@@ -21,7 +21,7 @@ router.route('/payment-cancel/:transactionId').post(postPaymentCancelOrderInfo)
 router.route('/searchOrder/:term').get(getSearchOrderInfo)
 
 // get single Order
-router.route('/:email').get(getAOrder)
+router.route('/:phone').get(getAOrder)
 
 const OrderRoutes = {
     router

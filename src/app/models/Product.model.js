@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Product Schema and connect DB Product
 const productSchema = new mongoose.Schema({
-    email: {
+    phone: {
         type: String,
         required: true
     },
