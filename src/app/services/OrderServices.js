@@ -23,6 +23,7 @@ exports.getAOrderTNXIDService = async (transactionId) => {
 // Add A Order by card
 
 exports.postCheckOrderWithCardServices = async (data) => {
+    
     const { order } = data;
 
     // Start the transaction for the update
@@ -156,7 +157,7 @@ exports.deleteOrderWithAddQuantityServices = async (order) => {
 // update Order when payment success
 exports.updateOrderPaymentSuccessService = async (transactionId) => {
     const updateCompleteOrderInfo = await OrderModel.findOne({transactionId: transactionId})
-    const completeOrderUpdate = await OrderModel.updateOne(updateCompleteOrderInfo, {type: 'paid', status: 'complete'}, {
+    const completeOrderUpdate = await OrderModel.updateOne(updateCompleteOrderInfo, {type: 'paid' }, {
     runValidators: true });
     return completeOrderUpdate;
 }
