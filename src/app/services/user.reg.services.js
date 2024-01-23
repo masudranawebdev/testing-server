@@ -7,8 +7,8 @@ exports.findAllUser = async (limit, skip) => {
 }
 
 // Find A User is Exist ?
-exports.checkAUserExits = async (email) => {
-    const FindUser = await UserModel.findOne({ email: email });
+exports.checkAUserExits = async (phone) => {
+    const FindUser = await UserModel.findOne({ phone: phone });
     return FindUser;
 }
 

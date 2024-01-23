@@ -1,33 +1,17 @@
-const nodemailer = require('nodemailer');
+const { default: axios } = require('axios');
 
-const SendOTP = async (otp, email) => {
+const SendOTP = async (otp, number) => {
     try {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            secure: true,
-            auth: {
-                user: "tempmaildev6@gmail.com",
-                // user: process.env.EMAIL_USERNAME,
-                pass: "qcofbnbjhcchccij",
-                // pass: process.env.pass,
-            },
-        });
-
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: 'No reply <classicIt@gmail.com>', // sender address
-            to: email, // list of receivers
-            subject: `Send Your Classic Ecommerce APP Registration OTP`,
-            html: `
-                <h5>Your OTP IS ${otp}</h5>
-            `, // html body
-        });
-        console.log(info)
-        return info;
+        const response = await axios.get(
+    `https://sms.rapidsms.xyz/request.php?user_id=prithibi&password=5475207&number=${number}&message=Your%20registration%20otp%20is%20${otp}`
+);
+    if(response?.data?.status == "success"){
+        return true;
+    }else{
+        return false;
+    }
     } catch (error) {
-        console.log(error)
-        return error;
+        return false;
     }
 };
 
