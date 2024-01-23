@@ -61,14 +61,7 @@ const generateOrderID = async() => {
     let uniqueOrderId;
 
     while (!isUnique) {
-        const total = await OrderModel.countDocuments();
-        const orderId = total + 1;
-
-        // Convert orderId to a 6-character string
-        const paddedOrderId = orderId.toString().padStart(4, 0);
-
-        // Combine the prefix and paddedOrderId
-        uniqueOrderId = `${prefix}${paddedOrderId}`;
+        uniqueOrderId = Math.floor(1000 + Math.random() * 9000);
 
         // Check if the generated ID is unique
         const existingOrder = await OrderModel.findOne({ orderId: uniqueOrderId });
@@ -149,11 +142,11 @@ exports.postOrder = async (req, res, next) => {
                     product_category: 'Default',
                     product_profile: 'Default',
                     cus_name: SSLData?.name,
-                    cus_email: SSLData?.email,
+                    cus_email: SSLData?.email || "Default Email",
                     cus_add1: SSLData?.address,
-                    cus_city: SSLData?.city,
+                    cus_city: SSLData?.city || "Default",
                     cus_postcode: SSLData?.zip_code || "Default",
-                    cus_country: SSLData?.country,
+                    cus_country: SSLData?.country || "Bangladesh",
                     cus_phone: SSLData?.phone,
                     ship_name: 'Default',
                     ship_add1: 'Default',
