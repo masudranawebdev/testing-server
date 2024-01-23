@@ -11,7 +11,15 @@ const { SendForgetPasswordLink } = require("../../middleware/send.forget.passwor
 // login a user
 exports.postLogUser = async (req, res, next) => {
     try {
-        const { phone, password } = req.body;
+        const { password } = req.body;
+        const phone = req.body?.phone.startsWith('+88') ? req.body?.phone.slice(3) :
+            req.body?.phone.startsWith('88') ? req.body?.phone.slice(2) :
+                req.body?.phone;
+
+        if(phone.startsWith('010') || phone.startsWith('012') || phone.startsWith('011')){
+            throw new ApiError(400, "Number formet not right !");
+        }
+
         const user = await findUser(phone)
         if (user) {
             if(user?.verify == false){

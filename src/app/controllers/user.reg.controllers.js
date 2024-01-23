@@ -38,7 +38,16 @@ exports.getAllUser = async (req, res, next) => {
 exports.postRegUser = async (req, res, next) => {
     try {
         const data = req.body;
-        const inserted = await checkAUserExits(data?.phone);
+        const phone = data?.phone;
+        const cleanedPhone = phone.startsWith('+88') ? phone.slice(3) :
+            phone.startsWith('88') ? phone.slice(2) :
+                phone;
+        
+        if(cleanedPhone.startsWith('010') || cleanedPhone.startsWith('012') || cleanedPhone.startsWith('011')){
+            throw new ApiError(400, "Number formet not right !");
+        }
+
+        const inserted = await checkAUserExits(cleanedPhone);
         if (inserted) {
             throw new ApiError(400, 'Previously Added !')
         }
@@ -46,7 +55,7 @@ exports.postRegUser = async (req, res, next) => {
         bcrypt.hash(data?.password, saltRounds, async function (err, hash) {
             const newUser = {
                 password: hash,
-                phone: data.phone,
+                phone: cleanedPhone,
                 otp: otp,
                 name: data?.name,
                 role: "customer",
@@ -106,7 +115,14 @@ exports.postRegUserAccountVerify = async (req, res, next) => {
 exports.postRegUserResendCode = async (req, res, next) => {
     try {
         const { phone } = req.body;
-        const user = await checkAUserExits(phone);
+        const cleanedPhone = phone.startsWith('+88') ? phone.slice(3) :
+            phone.startsWith('88') ? phone.slice(2) :
+                phone;
+
+        if(cleanedPhone.startsWith('010') || cleanedPhone.startsWith('012') || cleanedPhone.startsWith('011')){
+            throw new ApiError(400, "Number formet not right !");
+        }
+        const user = await checkAUserExits(cleanedPhone);
 
         if (!user) {
             throw new ApiError(400, 'User not found !')
