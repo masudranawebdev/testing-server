@@ -2,18 +2,6 @@ const mongoose = require("mongoose");
 
 // User Schema and connect DB collection
 const usersRegSchema = new mongoose.Schema({
-    email: {
-        required: true,
-        type: String,
-        unique: true,
-        validate: {
-            validator: (value) => {
-                const emailRegex = /@/
-                return emailRegex.test(value);
-            },
-            message: (props) => `${props.value} is not a valid email address!`,
-        },
-    },
     password: {
         type: String
     },
@@ -25,6 +13,8 @@ const usersRegSchema = new mongoose.Schema({
         default: "customer",
     },
     phone: {
+        required: true,
+        unique: true,
         type: String
     },
     otp: {

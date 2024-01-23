@@ -3,9 +3,8 @@ const sendResponse = require("../../shared/send.response");
 const ApiError = require("../../errors/ApiError");
 const {getAllOrderService, getAOrderService, postOrderWithCardServices, getSearchOrderService, deleteOrderWithOutCardServices, getAllOrderInfoService, postCheckOrderWithCardServices, updateOrderService, deleteOrderWithAddQuantityServices, postInitialOrderServices, postOrderWithCODServices, updateOrderPaymentSuccessService, deleteOrderPaymentFailService, getAOrderTNXIDService } = require("../services/OrderServices");
 const OrderModel = require("../models/Order.model");
-const { default: mongoose } = require("mongoose");
+
 const SSLCommerzPayment = require('sslcommerz-lts');
-const { ObjectId } = require("mongodb");
 const store_id = 'class65a7c35cefd5b'
 const store_passwd = 'class65a7c35cefd5b@ssl'
 const is_live = false //true for live, false for sandbox
@@ -55,16 +54,15 @@ exports.getAOrder = async (req, res, next) => {
 
 // generate order id
 const generateOrderID = async() => {
-    const prefix = 0; // You can use any prefix you like
 
     let isUnique = false;
     let uniqueOrderId;
 
     while (!isUnique) {
-        uniqueOrderId = Math.floor(1000 + Math.random() * 9000);
+        uniqueOrderId = Math.floor(1000 + Math.random() * 6000);
 
         // Check if the generated ID is unique
-        const existingOrder = await OrderModel.findOne({ orderId: uniqueOrderId });
+        uniqueOrderId = Math.floor(100000 + Math.random() * 900000);
 
         // If no existing order found, mark the ID as unique
         if (!existingOrder) {
@@ -123,7 +121,6 @@ exports.postOrder = async (req, res, next) => {
                 sendData.totalPrice = sendData.price;
                 delete sendData.name;
                 delete sendData.price;
-                delete sendData.address;
                 delete sendData.city;
                 delete sendData.zip_code;
                 delete sendData.country;
@@ -176,7 +173,6 @@ exports.postOrder = async (req, res, next) => {
                 sendData.totalPrice = sendData.price;
                 delete sendData.name;
                 delete sendData.price;
-                delete sendData.address;
                 delete sendData.city;
                 delete sendData.zip_code;
                 delete sendData.country;
@@ -298,7 +294,7 @@ exports.getTotalOrderInfo = async (req, res, next) => {
         if(successData?.length > 0){
             successData.forEach(order => {
             order?.order?.forEach(orderItem => {
-            totalPrice += orderItem.price * orderItem.quantity;
+            totalPrice += (orderItem.price * orderItem.quantity) + order.shipping_price;
                 });
             });
         }

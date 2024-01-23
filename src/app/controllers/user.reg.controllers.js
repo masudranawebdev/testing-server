@@ -38,14 +38,13 @@ exports.getAllUser = async (req, res, next) => {
 exports.postRegUser = async (req, res, next) => {
     try {
         const data = req.body;
-        const inserted = await checkAUserExits(data?.email);
+        const inserted = await checkAUserExits(data?.phone);
         if (inserted) {
             throw new ApiError(400, 'Previously Added !')
         }
         const otp = Math.floor(1000 + Math.random() * 9000);
         bcrypt.hash(data?.password, saltRounds, async function (err, hash) {
             const newUser = {
-                email: data.email,
                 password: hash,
                 phone: data.phone,
                 otp: otp,
@@ -55,17 +54,16 @@ exports.postRegUser = async (req, res, next) => {
             }
             try {
                 const result = await postRegUserServices(newUser);
-                await SendOTP(result?.otp, result?.email);
+                await SendOTP(result?.otp,result?.phone);
                 return sendResponse(res, {
                     statusCode: httpStatus.OK,
                     success: true,
-                    message: 'Check your email !',
+                    message: 'Check your Message !',
                     data: result,
                 });
             } catch (error) {
                 next(error);
             }
-
         });
     } catch (error) {
         next(error)
@@ -76,7 +74,7 @@ exports.postRegUser = async (req, res, next) => {
 exports.postRegUserAccountVerify = async (req, res, next) => {
     try {
         const data = req.body;
-        const user = await checkAUserExits(data?.email);
+        const user = await checkAUserExits(data?.phone);
         if (!user) {
             throw new ApiError(400, 'User not found !')
         }
@@ -107,8 +105,8 @@ exports.postRegUserAccountVerify = async (req, res, next) => {
 // resend his OTP and also update in DB
 exports.postRegUserResendCode = async (req, res, next) => {
     try {
-        const { email } = req.body;
-        const user = await checkAUserExits(email);
+        const { phone } = req.body;
+        const user = await checkAUserExits(phone);
 
         if (!user) {
             throw new ApiError(400, 'User not found !')
@@ -116,8 +114,8 @@ exports.postRegUserResendCode = async (req, res, next) => {
         const otp = Math.floor(1000 + Math.random() * 9000);
         const updateOTP = await updateRegUserOTPServices(otp, user?._id);
         if (updateOTP?.modifiedCount > 0) {
-            const newOtp = await checkAUserExits(email);
-            await SendOTP(newOtp?.otp, email);
+            const newOtp = await checkAUserExits(phone);
+            await SendOTP(newOtp?.otp, phone);
             return sendResponse(res, {
                 statusCode: httpStatus.OK,
                 success: true,
